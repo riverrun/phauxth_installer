@@ -61,6 +61,13 @@ defmodule <%= base %>Web.SessionControllerTest do
     conn = get conn, user_path(conn, :index)
     assert redirected_to(conn) == session_path(conn, :new)
     assert Accounts.list_sessions(user.id) == %{}
+  end
+
+  test "redirects to previously requested resource", %{conn: conn, user: user} do
+    conn = get conn, user_path(conn, :show, user)
+    assert redirected_to(conn) == session_path(conn, :new)
+    conn = post conn, session_path(conn, :create), session: @create_attrs
+    assert redirected_to(conn) == user_path(conn, :show, user)
   end<%= if remember do %>
 
   test "remember me cookie is added / not added", %{conn: conn} do
