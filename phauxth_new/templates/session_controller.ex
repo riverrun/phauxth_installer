@@ -28,8 +28,7 @@ defmodule <%= base %>Web.SessionController do
         Accounts.add_session(user, session_id, System.system_time(:second))
         Login.add_session(conn, session_id, user.id)<%= if remember do %>
         |> add_remember_me(user.id, params)<% end %>
-        |> success("You have been logged in",  get_session(conn, :request_path) ||
-          user_path(conn, :index))
+        |> login_success(user_path(conn, :index))
       {:error, message} ->
         error(conn, message, session_path(conn, :new))<% end %>
     end
