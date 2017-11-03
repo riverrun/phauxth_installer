@@ -21,7 +21,7 @@ defmodule <%= base %>Web.SessionController do
     case Login.verify(params, Accounts) do
       {:ok, user} -><%= if api do %>
         token = Phauxth.Token.sign(conn, user.id)
-        render(conn, <%= base %>Web.SessionView, "info.json", %{info: token})
+        render(conn, "info.json", %{info: token})
       {:error, _message} ->
         error(conn, :unauthorized, 401)<% else %>
         session_id = Login.gen_session_id("F")

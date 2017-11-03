@@ -21,15 +21,7 @@ defmodule <%= base %>Web.PasswordResetControllerTest do
     conn = post(conn, password_reset_path(conn, :create), password_reset: valid_attrs)<%= if api do %>
     assert json_response(conn, 201)["info"]["detail"]<% else %>
     assert conn.private.phoenix_flash["info"] =~ "your inbox for instructions"
-    assert redirected_to(conn) == page_path(conn, :index)
-  end
-
-  test "sessions are deleted when user creates a password reset request", %{conn: conn, user: user} do
-    valid_attrs = %{email: "gladys@example.com"}
-    add_phauxth_session(conn, user)
-    assert get_user().sessions != %{}
-    post(conn, password_reset_path(conn, :create), password_reset: valid_attrs)
-    assert get_user().sessions == %{}<% end %>
+    assert redirected_to(conn) == page_path(conn, :index)<% end %>
   end
 
   test "create function fails for no user", %{conn: conn} do
@@ -55,6 +47,15 @@ defmodule <%= base %>Web.PasswordResetControllerTest do
     invalid_attrs = %{email: "gladys@example.com", password: "^hEsdg*F899", key: "garbage"}
     conn = put(conn, password_reset_path(conn, :update), password_reset: invalid_attrs)<%= if api do %>
     assert json_response(conn, 422)["errors"] != %{}<% else %>
-    assert conn.private.phoenix_flash["error"] =~ "Invalid credentials"<% end %>
+    assert conn.private.phoenix_flash["error"] =~ "Invalid credentials"
+  end
+
+  test "sessions are deleted when user updates password", %{conn: conn, user: user} do
+    add_phauxth_session(conn, user)
+    assert get_user().sessions != %{}
+    valid_attrs = Map.put(@update_attrs, :key, gen_key("gladys@example.com"))
+    reset_conn = put(conn, password_reset_path(conn, :update), password_reset: valid_attrs)
+    refute get_session(reset_conn, :phauxth_session_id)
+    assert get_user().sessions == %{}<% end %>
   end
 end

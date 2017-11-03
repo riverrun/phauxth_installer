@@ -125,7 +125,7 @@ defmodule Mix.Tasks.Phauxth.NewTest do
       end
 
       assert_file "lib/phauxth_new_web/controllers/session_controller.ex", fn file ->
-        assert file =~ ~s(PhauxthNewWeb.SessionView, "info.json", %{info: token})
+        assert file =~ ~s(conn, "info.json", %{info: token})
       end
 
       assert_file "lib/phauxth_new_web/views/user_view.ex", fn file ->

@@ -28,9 +28,8 @@ defmodule <%= base %>.Accounts do
   end
 
   def create_password_reset(endpoint, attrs) do
-    with %User{} = user <- get_by(attrs) do<%= if api do %>
-      change(user, %{reset_sent_at: DateTime.utc_now}) |> Repo.update<% else %>
-      change(user, %{reset_sent_at: DateTime.utc_now, sessions: %{}}) |> Repo.update<% end %>
+    with %User{} = user <- get_by(attrs) do
+      change(user, %{reset_sent_at: DateTime.utc_now}) |> Repo.update
       Log.info(%Log{user: user.id, message: "password reset requested"})
       Phauxth.Token.sign(endpoint, attrs)
     end
@@ -44,8 +43,9 @@ defmodule <%= base %>.Accounts do
 
   def update_password(%User{} = user, attrs) do
     user
-    |> User.create_changeset(attrs)
-    |> change(%{reset_sent_at: nil})
+    |> User.create_changeset(attrs)<%= if api do %>
+    |> change(%{reset_sent_at: nil})<% else %>
+    |> change(%{reset_sent_at: nil, sessions: %{}})<% end %>
     |> Repo.update
   end<% end %>
 
