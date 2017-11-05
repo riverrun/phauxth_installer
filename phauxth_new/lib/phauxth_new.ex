@@ -66,16 +66,18 @@ defmodule Mix.Tasks.Phauxth.New do
     {:eex, "message_test.exs", "test/namespace/accounts/message_test.exs"},
     {:eex, "confirm_controller.ex", "_web/controllers/confirm_controller.ex"},
     {:eex, "confirm_controller_test.exs", "test/namespace_web/controllers/confirm_controller_test.exs"},
-    {:eex, "confirm_view.ex", "_web/views/confirm_view.ex"},
     {:eex, "password_reset_controller.ex", "_web/controllers/password_reset_controller.ex"},
     {:eex, "password_reset_controller_test.exs", "test/namespace_web/controllers/password_reset_controller_test.exs"},
     {:eex, "password_reset_view.ex", "_web/views/password_reset_view.ex"}]
+
+  @phx_api_confirm [{:eex, "confirm_view.ex", "_web/views/confirm_view.ex"}]
 
   @phx_html_confirm [{:text, "password_reset_new.html.eex", "_web/templates/password_reset/new.html.eex"},
     {:text, "password_reset_edit.html.eex", "_web/templates/password_reset/edit.html.eex"}]
 
   root = Path.expand("../templates", __DIR__)
-  all_files = @phx_base ++ @phx_api ++ @phx_html ++ @phx_confirm ++ @phx_html_confirm
+  all_files = @phx_base ++ @phx_api ++ @phx_html ++ @phx_confirm ++
+    @phx_api_confirm ++ @phx_html_confirm
 
   for {_, source, _} <- all_files do
     @external_resource Path.join(root, source)
@@ -95,7 +97,7 @@ defmodule Mix.Tasks.Phauxth.New do
       opts[:remember] == true, opts[:backups] != false}
 
     files = @phx_base ++ case {api, confirm} do
-      {true, true} -> @phx_api ++ @phx_confirm
+      {true, true} -> @phx_api ++ @phx_confirm ++ @phx_api_confirm
       {true, _} -> @phx_api
       {_, true} -> @phx_html ++ @phx_confirm ++ @phx_html_confirm
       _ -> @phx_html
