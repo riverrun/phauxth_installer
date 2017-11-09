@@ -4,11 +4,11 @@ defmodule <%= base %>.Accounts.Message do
 
   This module provides functions to be used with the Phauxth authentication
   library when confirming users or handling password resets. It uses
-  Bamboo, with the Mandrill adapter, to email users. For tests, it uses
-  a test adapter, which is configured in the config/test.exs file.
+  Bamboo, with the LocalAdapter, which is a good development tool.
+  For tests, it uses a test adapter, which is configured in the
+  config/test.exs file.
 
-  If you want to use a different email adapter, or another email / phone
-  library, read the instructions below.
+  For production, you will need to setup a different email adapter.
 
   ## Bamboo with a different adapter
 

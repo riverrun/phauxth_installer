@@ -208,8 +208,7 @@ defmodule Mix.Tasks.Phauxth.New do
 
     # Mailer configuration
     config :#{base_name}, #{base}.Mailer,
-      adapter: Bamboo.MandrillAdapter,
-      api_key: System.get_env("MANDRILL_API_KEY")
+      adapter: Bamboo.LocalAdapter
     """
   end
 
