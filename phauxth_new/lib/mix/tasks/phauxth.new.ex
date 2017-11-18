@@ -1,6 +1,8 @@
 defmodule Mix.Tasks.Phauxth.New do
   use Mix.Task
 
+  import Phauxth.New.Generator
+
   @moduledoc """
   Create modules for basic authorization.
 
@@ -75,7 +77,7 @@ defmodule Mix.Tasks.Phauxth.New do
   @phx_html_confirm [{:text, "password_reset_new.html.eex", "_web/templates/password_reset/new.html.eex"},
     {:text, "password_reset_edit.html.eex", "_web/templates/password_reset/edit.html.eex"}]
 
-  root = Path.expand("../templates", __DIR__)
+  root = Path.expand("../../../templates", __DIR__)
   all_files = @phx_base ++ @phx_api ++ @phx_html ++ @phx_confirm ++
     @phx_api_confirm ++ @phx_html_confirm
 
@@ -108,16 +110,17 @@ defmodule Mix.Tasks.Phauxth.New do
 
     copy_files(files, base_name: base_name, base: base, api: api,
                confirm: confirm, remember: remember, backups: backups)
+    update_mix(confirm)
     update_config(confirm, base_name, base)
 
     Mix.shell.info """
 
     We are almost ready!
 
-    You need to first edit the `mix.exs` file, adding `{:phauxth, "~> 1.2"},`
-    to it. You also need to add one of the following password hashing libraries:
-    `argon2_elixir`, `bcrypt_elixir` or `pbkdf2_elixir` (see the documentation
-    for Comeonin for more information about these libraries) to the deps.
+    If you want to use argon2_elixir or pbkdf2_elixir, you need to
+    edit the `mix.exs file`, replacing bcrypt_elixir with the hashing
+    library you want to use.
+
     #{confirm_deps_message(confirm)}
 
     For more information about authorization, see the authorize.ex file
@@ -133,12 +136,6 @@ defmodule Mix.Tasks.Phauxth.New do
         mix phx.server
 
     """
-  end
-
-  defp check_directory do
-    if Mix.Project.config |> Keyword.fetch(:app) == :error do
-      Mix.raise "Not in a Mix project. Please make sure you are in the correct directory."
-    end
   end
 
   defp copy_files(files, opts) do
@@ -157,83 +154,4 @@ defmodule Mix.Tasks.Phauxth.New do
       create_file(target, contents, opts[:backups])
     end
   end
-
-  defp create_file(path, contents, create_backups) do
-    if File.exists?(path) and create_backups do
-      backup = path <> ".bak"
-      Mix.shell.info [:green, "* creating ", :reset, Path.relative_to_cwd(backup)]
-      File.rename(path, backup)
-    end
-    Mix.shell.info [:green, "* creating ", :reset, Path.relative_to_cwd(path)]
-    File.mkdir_p!(Path.dirname(path))
-    File.write!(path, contents)
-  end
-
-  defp update_config(confirm, base_name, base) do
-    entry = config_input(confirm, base_name, base)
-            |> EEx.eval_string(endpoint: inspect(get_endpoint(base_name)))
-
-    {:ok, conf} = File.read("config/config.exs")
-    new_conf = String.split(conf, "\n\n")
-               |> List.insert_at(-3, entry)
-               |> Enum.join("\n\n")
-    File.write("config/config.exs", new_conf)
-    if confirm, do: add_test_config(base_name, base)
-  end
-
-  defp base_name do
-    Mix.Project.config |> Keyword.fetch!(:app) |> to_string
-  end
-
-  defp get_endpoint(base_name) do
-    web = base_name <> "_web"
-    Macro.camelize(web)
-    |> Module.concat(Endpoint)
-  end
-
-  defp gen_token_salt(length) do
-    :crypto.strong_rand_bytes(length) |> Base.encode64 |> binary_part(0, length)
-  end
-
-  defp config_input(false, _, _) do
-    """
-    # Phauxth authentication configuration
-    config :phauxth,
-      token_salt: \"#{gen_token_salt(8)}\",
-      endpoint: <%= endpoint %>
-    """
-  end
-  defp config_input(true, base_name, base) do
-    config_input(false, base_name, base) <> """
-
-    # Mailer configuration
-    config :#{base_name}, #{base}.Mailer,
-      adapter: Bamboo.LocalAdapter
-    """
-  end
-
-  defp add_test_config(base_name, base) do
-    test_entry = """
-    \n# Mailer test configuration
-    config :#{base_name}, #{base}.Mailer,
-      adapter: Bamboo.TestAdapter
-    """
-
-    {:ok, test_conf} = File.read("config/test.exs")
-    File.write("config/test.exs", test_conf <> test_entry)
-  end
-
-  defp confirm_deps_message(true) do
-    "You also need to add bamboo to the deps if you are using Bamboo\n" <>
-    "to email users. Then, run `mix deps.get`."
-  end
-  defp confirm_deps_message(_), do: "Then, run `mix deps.get`."
-
-  defp timestamp do
-    {{y, m, d}, {hh, mm, ss}} = :calendar.universal_time()
-    "#{y}#{pad(m)}#{pad(d)}#{pad(hh)}#{pad(mm)}#{pad(ss)}"
-  end
-
-  defp pad(i) when i < 10, do: << ?0, ?0 + i >>
-  defp pad(i), do: to_string(i)
 end

@@ -40,8 +40,7 @@ defmodule Mix.Tasks.Phauxth.NewTest do
       end
 
       assert_received {:mix_shell, :info, ["\nWe are almost ready!" <> _ = message]}
-      assert message =~ ~s(You need to first edit the `mix.exs` file)
-      assert message =~ ~s({:phauxth, "~> 1.2"})
+      assert message =~ ~s(If you want to use argon2_elixir or pbkdf2_elixir)
       assert message =~ ~s(And to start the server)
     end
   end

@@ -3,9 +3,10 @@ Mix.shell(Mix.Shell.Process)
 defmodule MixHelper do
   import ExUnit.Assertions
 
+  @basic_mix "defmodule MyApp.Mix do\ndefp deps\n[\n{:cowboy, \"~> 1.0\"}\n]\nend"
   @main_config "use Mix.Config\n\nconfig :myapp,\necto_repos: [MyApp.Repo]\n\n" <>
     "config :myapp, MyAppWeb.Endpoint,\nurl: [host: \"localhost\"]\n\n" <>
-    "config :logger, :console\n\nimport_config Mix.env.exs"
+    "# Configures Elixir's Logger\nconfig :logger, :console\n\nimport_config Mix.env.exs"
   @test_config "use Mix.Config\n\nconfig :logger, level: :warn"
 
   def tmp_path do
@@ -16,6 +17,7 @@ defmodule MixHelper do
     path = Path.join(tmp_path(), String.replace(which, " ", "_"))
     File.rm_rf!(path)
     File.mkdir_p!(path)
+    File.write!(Path.join(path, "mix.exs"), @basic_mix)
     create_config(Path.join(path, "config"))
     File.cd!(path, function)
   end
