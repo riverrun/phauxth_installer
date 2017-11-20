@@ -25,7 +25,7 @@ defmodule Phauxth.New.Generator do
   def update_mix(confirm) do
     entry = mix_input(confirm) |> EEx.eval_string()
     {:ok, mixfile} = File.read("mix.exs")
-    new_mix = String.replace(mixfile, ~r/{:cowboy, "~> \d\.\d+"}/, entry <> "\\0")
+    new_mix = String.replace(mixfile, ~r/{:cowboy, "~> \d\.\d+"}/, entry <> "      \\0")
     File.write("mix.exs", new_mix)
   end
 
@@ -45,10 +45,15 @@ defmodule Phauxth.New.Generator do
   end
 
   def confirm_deps_message(true) do
-    "You also need to add bamboo to the deps if you are using Bamboo\n" <>
-    "to email users. Then, run `mix deps.get`."
+    """
+    bamboo has been added to the mix.exs file as a dependency.
+    If you want to use a different library to email users, edit
+    the mix.exs file.
+
+    Run `mix deps.get`.
+    """
   end
-  def confirm_deps_message(_), do: "Then, run `mix deps.get`."
+  def confirm_deps_message(_), do: "Run `mix deps.get`."
 
   defp get_endpoint(base_name) do
     web = base_name <> "_web"
@@ -61,15 +66,12 @@ defmodule Phauxth.New.Generator do
   end
 
   defp mix_input(false) do
-    """
-      {:phauxth, "~> 1.2"},
-      {:bcrypt_elixir, "~> 1.0"},\n
-    """
+    "{:phauxth, \"~> 1.2\"},\n" <>
+    "      {:bcrypt_elixir, \"~> 1.0\"},\n"
   end
   defp mix_input(true) do
-    """
-      {:bamboo, "~> 0.8"},\n
-    """
+    mix_input(false) <>
+    "      {:bamboo, \"~> 0.8\"},\n"
   end
 
   defp config_input(false, _, _) do

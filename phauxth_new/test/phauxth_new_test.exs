@@ -40,6 +40,7 @@ defmodule Mix.Tasks.Phauxth.NewTest do
       end
 
       assert_received {:mix_shell, :info, ["\nWe are almost ready!" <> _ = message]}
+      refute message =~ ~s(bamboo has been added to the mix.exs file)
       assert message =~ ~s(If you want to use argon2_elixir or pbkdf2_elixir)
       assert message =~ ~s(And to start the server)
     end
@@ -84,7 +85,7 @@ defmodule Mix.Tasks.Phauxth.NewTest do
       end
 
       assert_received {:mix_shell, :info, ["\nWe are almost ready!" <> _ = message]}
-      assert message =~ ~s(need to add bamboo to the deps)
+      assert message =~ ~s(bamboo has been added to the mix.exs file)
     end
   end
 

@@ -8,11 +8,6 @@ function enter_cave {
     mix phauxth.new $@
 }
 
-function edit_mix {
-    sed -i 's/{:postgrex, ">= 0.0.0"},/{:postgrex, ">= 0.0.0"},\n     {:phauxth, git: "https:\/\/github.com\/riverrun\/phauxth.git"},\n     {:bcrypt_elixir, "~> 1.0"},\n     {:bamboo, "~> 0.8"},/g' mix.exs
-    mix deps.get
-}
-
 function run_tests {
     mix test >> $LOG
     MIX_ENV=test mix ecto.drop
@@ -26,7 +21,7 @@ function clean {
 function phauxth_project {
     cd alibaba || exit $?
     enter_cave $@
-    edit_mix
+    mix deps.get
     run_tests
     clean
 }

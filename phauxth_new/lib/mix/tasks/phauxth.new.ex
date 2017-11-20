@@ -117,9 +117,10 @@ defmodule Mix.Tasks.Phauxth.New do
 
     We are almost ready!
 
-    If you want to use argon2_elixir or pbkdf2_elixir, you need to
-    edit the `mix.exs file`, replacing bcrypt_elixir with the hashing
-    library you want to use.
+    bcrypt_elixir has been added to the mix.exs file as a dependency.
+    If you want to use argon2_elixir or pbkdf2_elixir instead, edit
+    the mix.exs file, replacing bcrypt_elixir with the hashing library
+    you want to use.
 
     #{confirm_deps_message(confirm)}
 
