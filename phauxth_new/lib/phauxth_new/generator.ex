@@ -36,7 +36,10 @@ defmodule Phauxth.New.Generator do
     {:ok, conf} = File.read("config/config.exs")
     new_conf = String.replace(conf, ~r/# Configures Elixir's Logger/, entry <> "\\0")
     File.write("config/config.exs", new_conf)
-    if confirm, do: add_test_config(base_name, base)
+
+    test_entry = test_config_input(confirm, base_name, base)
+    {:ok, test_conf} = File.read("config/test.exs")
+    File.write("config/test.exs", test_conf <> test_entry)
   end
 
   def timestamp do
@@ -90,15 +93,22 @@ defmodule Phauxth.New.Generator do
     """
   end
 
-  defp add_test_config(base_name, base) do
-    test_entry = """
+  defp test_config_input(false, _, _) do
+    """
+    \n\n# Comeonin password hashing test config
+    #config :argon2_elixir,
+      #t_cost: 2,
+      #m_cost: 8
+    config :bcrypt_elixir, :log_rounds, 4
+    #config :pbkdf2_elixir, :rounds, 1
+    """
+  end
+  defp test_config_input(true, base_name, base) do
+    test_config_input(false, base_name, base) <> """
     \n# Mailer test configuration
     config :#{base_name}, #{base}.Mailer,
       adapter: Bamboo.TestAdapter
     """
-
-    {:ok, test_conf} = File.read("config/test.exs")
-    File.write("config/test.exs", test_conf <> test_entry)
   end
 
   defp pad(i) when i < 10, do: << ?0, ?0 + i >>
