@@ -99,8 +99,8 @@ defmodule Phauxth.New.Generator do
     #config :argon2_elixir,
       #t_cost: 2,
       #m_cost: 8
-    config :bcrypt_elixir, :log_rounds, 4
-    #config :pbkdf2_elixir, :rounds, 1
+    config :bcrypt_elixir, log_rounds: 4
+    #config :pbkdf2_elixir, rounds: 1
     """
   end
   defp test_config_input(true, base_name, base) do

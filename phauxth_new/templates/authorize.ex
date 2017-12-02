@@ -46,19 +46,20 @@ defmodule <%= base %>Web.Authorize do
     id == to_string(current_user.id) and conn ||<%= if api do %>
       error(conn, :forbidden, 403)<% else %>
       error(conn, "You are not authorized to view this page", user_path(conn, :index))<% end %>
-  end
+  end<%= if api do %>
+
+  def error(conn, status, code) do
+    put_status(conn, status)
+    |> put_view(<%= base %>Web.AuthView)
+    |> render("#{code}.json", [])
+    |> halt
+  end<% else %>
 
   def success(conn, message, path) do
     conn
     |> put_flash(:info, message)
     |> redirect(to: path)
-  end<%= if api do %>
-
-  def error(conn, status, code) do
-    put_status(conn, status)
-    |> render(<%= base %>Web.AuthView, "#{code}.json", [])
-    |> halt
-  end<% else %>
+  end
 
   def error(conn, message, path) do
     conn

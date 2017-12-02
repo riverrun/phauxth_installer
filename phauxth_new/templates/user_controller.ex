@@ -25,6 +25,7 @@ defmodule <%= base %>Web.UserController do
 
   def create(conn, %{"user" => %{"email" => email} = user_params}) do
     key = Phauxth.Token.sign(conn, %{"email" => email})<% else %>
+
   def create(conn, %{"user" => user_params}) do<% end %><%= if api do %>
     with {:ok, user} <- Accounts.create_user(user_params) do
       Log.info(%Log{user: user.id, message: "user created"})<%= if confirm do %>
