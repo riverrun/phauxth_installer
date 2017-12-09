@@ -77,7 +77,7 @@ defmodule Mix.Tasks.Phauxth.NewTest do
 
       assert_file("test/support/auth_case.ex", fn file ->
         assert file =~ "import Ecto.Changeset"
-        assert file =~ "change(%{confirmed_at: DateTime.utc_now})"
+        assert file =~ "change(%{confirmed_at: DateTime.utc_now()})"
       end)
 
       assert_file("lib/phauxth_new/accounts/user.ex", fn file ->
@@ -86,7 +86,7 @@ defmodule Mix.Tasks.Phauxth.NewTest do
       end)
 
       assert_file("lib/phauxth_new/accounts/accounts.ex", fn file ->
-        assert file =~ "change(user, %{confirmed_at: DateTime.utc_now})"
+        assert file =~ "change(user, %{confirmed_at: DateTime.utc_now()})"
       end)
 
       assert_received {:mix_shell, :info, ["\nWe are almost ready!" <> _ = message]}

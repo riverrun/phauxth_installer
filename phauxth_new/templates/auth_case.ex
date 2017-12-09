@@ -14,15 +14,15 @@ defmodule <%= base %>Web.AuthCase do
 
   def add_user_confirmed(email) do
     add_user(email)
-    |> change(%{confirmed_at: DateTime.utc_now})
-    |> Repo.update!
+    |> change(%{confirmed_at: DateTime.utc_now()})
+    |> Repo.update!()
   end
 
   def add_reset_user(email) do
     add_user(email)
-    |> change(%{confirmed_at: DateTime.utc_now})
-    |> change(%{reset_sent_at: DateTime.utc_now})
-    |> Repo.update!
+    |> change(%{confirmed_at: DateTime.utc_now()})
+    |> change(%{reset_sent_at: DateTime.utc_now()})
+    |> Repo.update!()
   end<% end %><%= if api do %>
 
   def add_token_conn(conn, user) do

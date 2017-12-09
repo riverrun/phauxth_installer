@@ -12,8 +12,11 @@ defmodule <%= base %>Web.Authorize do
     error(conn, :unauthorized, 401)<% else %>
     need_login(conn)<% end %>
   end
-  def auth_action(%Plug.Conn{assigns: %{current_user: current_user},
-      params: params} = conn, module) do
+
+  def auth_action(
+        %Plug.Conn{assigns: %{current_user: current_user}, params: params} = conn,
+        module
+      ) do
     apply(module, action_name(conn), [conn, params, current_user])
   end
 
@@ -23,11 +26,13 @@ defmodule <%= base %>Web.Authorize do
     error(conn, :unauthorized, 401)<% else %>
     need_login(conn)<% end %>
   end
+
   def user_check(conn, _opts), do: conn
 
   # Plug to only allow unauthenticated users to access the resource.
   # See the session controller for an example.
   def guest_check(%Plug.Conn{assigns: %{current_user: nil}} = conn, _opts), do: conn
+
   def guest_check(%Plug.Conn{assigns: %{current_user: _current_user}} = conn, _opts) do<%= if api do %>
     put_status(conn, :unauthorized)
     |> render(<%= base %>Web.AuthView, "logged_in.json", [])
@@ -41,10 +46,12 @@ defmodule <%= base %>Web.Authorize do
     error(conn, :unauthorized, 401)<% else %>
     need_login(conn)<% end %>
   end
-  def id_check(%Plug.Conn{params: %{"id" => id},
-      assigns: %{current_user: current_user}} = conn, _opts) do
-    id == to_string(current_user.id) and conn ||<%= if api do %>
-      error(conn, :forbidden, 403)<% else %>
+
+  def id_check(
+        %Plug.Conn{params: %{"id" => id}, assigns: %{current_user: current_user}} = conn,
+        _opts
+      ) do
+    (id == to_string(current_user.id) and conn) ||<%= if api do %>error(conn, :forbidden, 403)<% else %>
       error(conn, "You are not authorized to view this page", user_path(conn, :index))<% end %>
   end<%= if api do %>
 
@@ -70,6 +77,7 @@ defmodule <%= base %>Web.Authorize do
 
   def login_success(conn, path) do
     path = get_session(conn, :request_path) || path
+
     delete_session(conn, :request_path)
     |> success("You have been logged in", get_session(conn, :request_path) || path)
   end

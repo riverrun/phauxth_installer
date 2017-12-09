@@ -26,9 +26,11 @@ defmodule <%= base %>Web.SessionController do
         error(conn, :unauthorized, 401)<% else %>
         session_id = Login.gen_session_id("F")
         Accounts.add_session(user, session_id, System.system_time(:second))
+
         Login.add_session(conn, session_id, user.id)<%= if remember do %>
         |> add_remember_me(user.id, params)<% end %>
         |> login_success(user_path(conn, :index))
+
       {:error, message} ->
         error(conn, message, session_path(conn, :new))<% end %>
     end
@@ -37,8 +39,9 @@ defmodule <%= base %>Web.SessionController do
   def delete(%Plug.Conn{assigns: %{current_user: user}} = conn, _) do
     <<session_id::binary-size(17), _::binary>> = get_session(conn, :phauxth_session_id)
     Accounts.delete_session(user, session_id)
+
     delete_session(conn, :phauxth_session_id)<%= if remember do %>
-    |> Phauxth.Remember.delete_rem_cookie<% end %>
+    |> Phauxth.Remember.delete_rem_cookie()<% end %>
     |> success("You have been logged out", page_path(conn, :index))
   end<%= if remember do %>
 
@@ -47,5 +50,6 @@ defmodule <%= base %>Web.SessionController do
   defp add_remember_me(conn, user_id, %{"remember_me" => "true"}) do
     Phauxth.Remember.add_rem_cookie(conn, user_id)
   end
+
   defp add_remember_me(conn, _, _), do: conn<% end %><% end %>
 end

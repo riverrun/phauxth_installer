@@ -68,5 +68,4 @@ defmodule <%= base %>.AccountsTest do
     attrs = %{password: "pass"}
     assert {:error, %Ecto.Changeset{}} = Accounts.update_password(user, attrs)
   end<% end %>
-
 end

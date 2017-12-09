@@ -20,11 +20,11 @@ defmodule <%= base %>.Accounts do
   def create_user(attrs) do
     %User{}
     |> User.create_changeset(attrs)
-    |> Repo.insert
+    |> Repo.insert()
   end<%= if confirm do %>
 
   def confirm_user(%User{} = user) do
-    change(user, %{confirmed_at: DateTime.utc_now}) |> Repo.update
+    change(user, %{confirmed_at: DateTime.utc_now()}) |> Repo.update()
   end
 
   def create_password_reset(endpoint, attrs) do
@@ -38,7 +38,7 @@ defmodule <%= base %>.Accounts do
   def update_user(%User{} = user, attrs) do
     user
     |> User.changeset(attrs)
-    |> Repo.update
+    |> Repo.update()
   end<%= if confirm do %>
 
   def update_password(%User{} = user, attrs) do
@@ -46,7 +46,7 @@ defmodule <%= base %>.Accounts do
     |> User.create_changeset(attrs)<%= if api do %>
     |> change(%{reset_sent_at: nil})<% else %>
     |> change(%{reset_sent_at: nil, sessions: %{}})<% end %>
-    |> Repo.update
+    |> Repo.update()
   end<% end %>
 
   def delete_user(%User{} = user) do
@@ -73,7 +73,19 @@ defmodule <%= base %>.Accounts do
 
   def remove_old_sessions(session_age) do
     now = System.system_time(:second)
-    Enum.map(list_users(), &change(&1, sessions: :maps.filter(fn _, time ->
-      time + session_age > now end, &1.sessions)) |> Repo.update)
+    Enum.map(
+      list_users(),
+      &(change(
+          &1,
+          sessions:
+            :maps.filter(
+              fn _, time ->
+                time + session_age > now
+              end,
+              &1.sessions
+            )
+        )
+        |> Repo.update())
+    )
   end<% end %>
 end

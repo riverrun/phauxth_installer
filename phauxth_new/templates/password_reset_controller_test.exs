@@ -38,7 +38,7 @@ defmodule <%= base %>Web.PasswordResetControllerTest do
     assert json_response(reset_conn, 200)["info"]["detail"] =~ "password has been reset"<% else %>
     assert reset_conn.private.phoenix_flash["info"] =~ "password has been reset"
     assert redirected_to(reset_conn) == session_path(conn, :new)<% end %>
-    conn = post conn, session_path(conn, :create), session: @update_attrs<%= if api do %>
+    conn = post(conn, session_path(conn, :create), session: @update_attrs)<%= if api do %>
     assert json_response(conn, 200)["access_token"]<% else %>
     assert redirected_to(conn) == user_path(conn, :index)<% end %>
   end

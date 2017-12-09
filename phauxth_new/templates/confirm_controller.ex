@@ -14,6 +14,7 @@ defmodule <%= base %>Web.ConfirmController do
       {:error, _message} ->
         error(conn, :unauthorized, 401)<% else %>
         success(conn, message, session_path(conn, :new))
+
       {:error, message} ->
         error(conn, message, session_path(conn, :new))<% end %>
     end

@@ -24,11 +24,13 @@ defmodule <%= base %>Web.UserController do
   end<% end %><%= if confirm do %>
 
   def create(conn, %{"user" => %{"email" => email} = user_params}) do
-    key = Phauxth.Token.sign(conn, %{"email" => email})<% else %>
+    key = Phauxth.Token.sign(conn, %{"email" => email})
+<% else %>
 
   def create(conn, %{"user" => user_params}) do<% end %><%= if api do %>
     with {:ok, user} <- Accounts.create_user(user_params) do
-      Log.info(%Log{user: user.id, message: "user created"})<%= if confirm do %>
+      Log.info(%Log{user: user.id, message: "user created"})
+<%= if confirm do %>
       Accounts.Message.confirm_request(email, key)<% end %>
       conn
       |> put_status(:created)
@@ -39,13 +41,14 @@ defmodule <%= base %>Web.UserController do
         Log.info(%Log{user: user.id, message: "user created"})<%= if confirm do %>
         Accounts.Message.confirm_request(email, key)<% end %>
         success(conn, "User created successfully", session_path(conn, :new))
+
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "new.html", changeset: changeset)<% end %>
     end
   end
 
   def show(%Plug.Conn{assigns: %{current_user: user}} = conn, %{"id" => id}) do
-    user = id == to_string(user.id) and user || Accounts.get(id)<%= if api do %>
+    user = (id == to_string(user.id) and user) || Accounts.get(id)<%= if api do %>
     render(conn, "show.json", user: user)<% else %>
     render(conn, "show.html", user: user)<% end %>
   end<%= if not api do %>
@@ -61,13 +64,15 @@ defmodule <%= base %>Web.UserController do
     case Accounts.update_user(user, user_params) do
       {:ok, user} ->
         success(conn, "User updated successfully", user_path(conn, :show, user))
+
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "edit.html", user: user, changeset: changeset)<% end %>
     end
   end
 
   def delete(%Plug.Conn{assigns: %{current_user: user}} = conn, _) do
-    {:ok, _user} = Accounts.delete_user(user)<%= if api do %>
+    {:ok, _user} = Accounts.delete_user(user)
+<%= if api do %>
     send_resp(conn, :no_content, "")<% else %>
     delete_session(conn, :phauxth_session_id)
     |> success("User deleted successfully", session_path(conn, :new))<% end %>

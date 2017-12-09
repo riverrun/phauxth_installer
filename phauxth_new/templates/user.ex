@@ -54,10 +54,12 @@ defmodule <%= base %>.Accounts.User do
       %{password: password}} = changeset) do
     change(changeset, Comeonin.Bcrypt.add_hash(password))
   end
+
   defp put_pass_hash(changeset), do: changeset
 
   defp strong_password?(password) when byte_size(password) > 7 do
     {:ok, password}
   end
+
   defp strong_password?(_), do: {:error, "The password is too short"}
 end

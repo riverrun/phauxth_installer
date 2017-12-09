@@ -10,13 +10,13 @@ defmodule Mix.Tasks.Phauxth.New do
 
   There are four options:
 
-    * api - create files to authenticate an api instead of a html application
+    * `:api` - create files to authenticate an api instead of a html application
       * the default is false
-    * confirm - create files for email / phone confirmation and password resetting
+    * `:confirm` - create files for email / phone confirmation and password resetting
       * the default is false
-    * remember - add functions to enable `remember_me` functionality
+    * `:remember` - add functions to enable `remember_me` functionality
       * the default is false
-    * backups - if a file already exists, save the old version as a backup file
+    * `:backups` - if a file already exists, save the old version as a backup file
       * the default is true
       * the old version will be saved with the `.bak` extension
 
