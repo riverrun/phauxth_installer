@@ -2,24 +2,25 @@ defmodule Phauxth.New.Generator do
   @moduledoc false
 
   def check_directory do
-    if Mix.Project.config |> Keyword.fetch(:app) == :error do
-      Mix.raise "Not in a Mix project. Please make sure you are in the correct directory."
+    if Mix.Project.config() |> Keyword.fetch(:app) == :error do
+      Mix.raise("Not in a Mix project. Please make sure you are in the correct directory.")
     end
   end
 
   def create_file(path, contents, create_backups) do
     if File.exists?(path) and create_backups do
       backup = path <> ".bak"
-      Mix.shell.info [:green, "* creating ", :reset, Path.relative_to_cwd(backup)]
+      Mix.shell().info([:green, "* creating ", :reset, Path.relative_to_cwd(backup)])
       File.rename(path, backup)
     end
-    Mix.shell.info [:green, "* creating ", :reset, Path.relative_to_cwd(path)]
+
+    Mix.shell().info([:green, "* creating ", :reset, Path.relative_to_cwd(path)])
     File.mkdir_p!(Path.dirname(path))
     File.write!(path, contents)
   end
 
   def base_name do
-    Mix.Project.config |> Keyword.fetch!(:app) |> to_string
+    Mix.Project.config() |> Keyword.fetch!(:app) |> to_string
   end
 
   def update_mix(confirm) do
@@ -30,8 +31,9 @@ defmodule Phauxth.New.Generator do
   end
 
   def update_config(confirm, base_name, base) do
-    entry = config_input(confirm, base_name, base)
-            |> EEx.eval_string(endpoint: inspect(get_endpoint(base_name)))
+    entry =
+      config_input(confirm, base_name, base)
+      |> EEx.eval_string(endpoint: inspect(get_endpoint(base_name)))
 
     {:ok, conf} = File.read("config/config.exs")
     new_conf = String.replace(conf, ~r/# Configures Elixir's Logger/, entry <> "\\0")
@@ -56,25 +58,26 @@ defmodule Phauxth.New.Generator do
     Run `mix deps.get`.
     """
   end
+
   def confirm_deps_message(_), do: "Run `mix deps.get`."
 
   defp get_endpoint(base_name) do
     web = base_name <> "_web"
+
     Macro.camelize(web)
     |> Module.concat(Endpoint)
   end
 
   defp gen_token_salt(length) do
-    :crypto.strong_rand_bytes(length) |> Base.encode64 |> binary_part(0, length)
+    :crypto.strong_rand_bytes(length) |> Base.encode64() |> binary_part(0, length)
   end
 
   defp mix_input(false) do
-    "{:phauxth, \"~> 1.2\"},\n" <>
-    "      {:bcrypt_elixir, \"~> 1.0\"},\n"
+    "{:phauxth, \"~> 1.2\"},\n" <> "      {:bcrypt_elixir, \"~> 1.0\"},\n"
   end
+
   defp mix_input(true) do
-    mix_input(false) <>
-    "      {:bamboo, \"~> 0.8\"},\n"
+    mix_input(false) <> "      {:bamboo, \"~> 0.8\"},\n"
   end
 
   defp config_input(false, _, _) do
@@ -85,12 +88,14 @@ defmodule Phauxth.New.Generator do
       endpoint: <%= endpoint %>\n
     """
   end
+
   defp config_input(true, base_name, base) do
-    config_input(false, base_name, base) <> """
-    # Mailer configuration
-    config :#{base_name}, #{base}.Mailer,
-      adapter: Bamboo.LocalAdapter\n
-    """
+    config_input(false, base_name, base) <>
+      """
+      # Mailer configuration
+      config :#{base_name}, #{base}.Mailer,
+        adapter: Bamboo.LocalAdapter\n
+      """
   end
 
   defp test_config_input(false, _, _) do
@@ -103,14 +108,16 @@ defmodule Phauxth.New.Generator do
     #config :pbkdf2_elixir, rounds: 1
     """
   end
+
   defp test_config_input(true, base_name, base) do
-    test_config_input(false, base_name, base) <> """
-    \n# Mailer test configuration
-    config :#{base_name}, #{base}.Mailer,
-      adapter: Bamboo.TestAdapter
-    """
+    test_config_input(false, base_name, base) <>
+      """
+      \n# Mailer test configuration
+      config :#{base_name}, #{base}.Mailer,
+        adapter: Bamboo.TestAdapter
+      """
   end
 
-  defp pad(i) when i < 10, do: << ?0, ?0 + i >>
+  defp pad(i) when i < 10, do: <<?0, ?0 + i>>
   defp pad(i), do: to_string(i)
 end

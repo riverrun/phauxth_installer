@@ -36,7 +36,8 @@ defmodule Mix.Tasks.Phauxth.New do
 
   """
 
-  @phx_base [{:eex, "auth_case.ex", "test/support/auth_case.ex"},
+  @phx_base [
+    {:eex, "auth_case.ex", "test/support/auth_case.ex"},
     {:eex, "repo_seeds.exs", "priv/repo/seeds.exs"},
     {:eex, "user.ex", "/accounts/user.ex"},
     {:eex, "user_migration.exs", "priv/repo/migrations/timestamp_create_users.exs"},
@@ -45,41 +46,63 @@ defmodule Mix.Tasks.Phauxth.New do
     {:eex, "router.ex", "_web/router.ex"},
     {:eex, "authorize.ex", "_web/controllers/authorize.ex"},
     {:eex, "session_controller.ex", "_web/controllers/session_controller.ex"},
-    {:eex, "session_controller_test.exs", "test/namespace_web/controllers/session_controller_test.exs"},
+    {
+      :eex,
+      "session_controller_test.exs",
+      "test/namespace_web/controllers/session_controller_test.exs"
+    },
     {:eex, "session_view.ex", "_web/views/session_view.ex"},
     {:eex, "user_controller.ex", "_web/controllers/user_controller.ex"},
     {:eex, "user_controller_test.exs", "test/namespace_web/controllers/user_controller_test.exs"},
-    {:eex, "user_view.ex", "_web/views/user_view.ex"}]
+    {:eex, "user_view.ex", "_web/views/user_view.ex"}
+  ]
 
-  @phx_api [{:eex, "fallback_controller.ex", "_web/controllers/fallback_controller.ex"},
+  @phx_api [
+    {:eex, "fallback_controller.ex", "_web/controllers/fallback_controller.ex"},
     {:eex, "auth_view.ex", "_web/views/auth_view.ex"},
-    {:eex, "changeset_view.ex", "_web/views/changeset_view.ex"}]
+    {:eex, "changeset_view.ex", "_web/views/changeset_view.ex"}
+  ]
 
-  @phx_html [{:text, "layout_app.html.eex", "_web/templates/layout/app.html.eex"},
+  @phx_html [
+    {:text, "layout_app.html.eex", "_web/templates/layout/app.html.eex"},
     {:text, "page_index.html.eex", "_web/templates/page/index.html.eex"},
     {:eex, "session_new.html.eex", "_web/templates/session/new.html.eex"},
     {:eex, "edit.html.eex", "_web/templates/user/edit.html.eex"},
     {:text, "index.html.eex", "_web/templates/user/index.html.eex"},
     {:text, "new.html.eex", "_web/templates/user/new.html.eex"},
-    {:text, "show.html.eex", "_web/templates/user/show.html.eex"}]
+    {:text, "show.html.eex", "_web/templates/user/show.html.eex"}
+  ]
 
-  @phx_confirm [{:eex, "message.ex", "/accounts/message.ex"},
+  @phx_confirm [
+    {:eex, "message.ex", "/accounts/message.ex"},
     {:eex, "mailer.ex", "/mailer.ex"},
     {:eex, "message_test.exs", "test/namespace/accounts/message_test.exs"},
     {:eex, "confirm_controller.ex", "_web/controllers/confirm_controller.ex"},
-    {:eex, "confirm_controller_test.exs", "test/namespace_web/controllers/confirm_controller_test.exs"},
+    {
+      :eex,
+      "confirm_controller_test.exs",
+      "test/namespace_web/controllers/confirm_controller_test.exs"
+    },
     {:eex, "password_reset_controller.ex", "_web/controllers/password_reset_controller.ex"},
-    {:eex, "password_reset_controller_test.exs", "test/namespace_web/controllers/password_reset_controller_test.exs"},
-    {:eex, "password_reset_view.ex", "_web/views/password_reset_view.ex"}]
+    {
+      :eex,
+      "password_reset_controller_test.exs",
+      "test/namespace_web/controllers/password_reset_controller_test.exs"
+    },
+    {:eex, "password_reset_view.ex", "_web/views/password_reset_view.ex"}
+  ]
 
   @phx_api_confirm [{:eex, "confirm_view.ex", "_web/views/confirm_view.ex"}]
 
-  @phx_html_confirm [{:text, "password_reset_new.html.eex", "_web/templates/password_reset/new.html.eex"},
-    {:text, "password_reset_edit.html.eex", "_web/templates/password_reset/edit.html.eex"}]
+  @phx_html_confirm [
+    {:text, "password_reset_new.html.eex", "_web/templates/password_reset/new.html.eex"},
+    {:text, "password_reset_edit.html.eex", "_web/templates/password_reset/edit.html.eex"}
+  ]
 
   root = Path.expand("../../../templates", __DIR__)
-  all_files = @phx_base ++ @phx_api ++ @phx_html ++ @phx_confirm ++
-    @phx_api_confirm ++ @phx_html_confirm
+
+  all_files =
+    @phx_base ++ @phx_api ++ @phx_html ++ @phx_confirm ++ @phx_api_confirm ++ @phx_html_confirm
 
   for {_, source, _} <- all_files do
     @external_resource Path.join(root, source)
@@ -89,31 +112,43 @@ defmodule Mix.Tasks.Phauxth.New do
   @doc false
   def run(args) do
     check_directory()
-    switches = [api: :boolean,
-                confirm: :boolean,
-                remember: :boolean,
-                backups: :boolean]
+    switches = [api: :boolean, confirm: :boolean, remember: :boolean, backups: :boolean]
     {opts, _, _} = OptionParser.parse(args, switches: switches)
 
-    {api, confirm, remember, backups} = {opts[:api] == true, opts[:confirm] == true,
-      opts[:remember] == true, opts[:backups] != false}
+    {api, confirm, remember, backups} =
+      {
+        opts[:api] == true,
+        opts[:confirm] == true,
+        opts[:remember] == true,
+        opts[:backups] != false
+      }
 
-    files = @phx_base ++ case {api, confirm} do
-      {true, true} -> @phx_api ++ @phx_confirm ++ @phx_api_confirm
-      {true, _} -> @phx_api
-      {_, true} -> @phx_html ++ @phx_confirm ++ @phx_html_confirm
-      _ -> @phx_html
-    end
+    files =
+      @phx_base ++
+        case {api, confirm} do
+          {true, true} -> @phx_api ++ @phx_confirm ++ @phx_api_confirm
+          {true, _} -> @phx_api
+          {_, true} -> @phx_html ++ @phx_confirm ++ @phx_html_confirm
+          _ -> @phx_html
+        end
 
     base_name = base_name()
-    base = base_name |> Macro.camelize
+    base = base_name |> Macro.camelize()
 
-    copy_files(files, base_name: base_name, base: base, api: api,
-               confirm: confirm, remember: remember, backups: backups)
+    copy_files(
+      files,
+      base_name: base_name,
+      base: base,
+      api: api,
+      confirm: confirm,
+      remember: remember,
+      backups: backups
+    )
+
     update_mix(confirm)
     update_config(confirm, base_name, base)
 
-    Mix.shell.info """
+    Mix.shell().info("""
 
     We are almost ready!
 
@@ -136,22 +171,27 @@ defmodule Mix.Tasks.Phauxth.New do
 
         mix phx.server
 
-    """
+    """)
   end
 
   defp copy_files(files, opts) do
     for {format, source, target} <- files do
       name = base_name()
-      target = case target do
-        "priv" <> _ -> String.replace(target, "timestamp", timestamp())
-        "test/namespace" <> _ -> String.replace(target, "test/namespace", "test/#{name}")
-        "test" <> _ -> target
-        _ -> "lib/#{name}" <> target
-      end
-      contents = case format do
-        :text -> render(source)
-        :eex  -> EEx.eval_string(render(source), opts)
-      end
+
+      target =
+        case target do
+          "priv" <> _ -> String.replace(target, "timestamp", timestamp())
+          "test/namespace" <> _ -> String.replace(target, "test/namespace", "test/#{name}")
+          "test" <> _ -> target
+          _ -> "lib/#{name}" <> target
+        end
+
+      contents =
+        case format do
+          :text -> render(source)
+          :eex -> EEx.eval_string(render(source), opts)
+        end
+
       create_file(target, contents, opts[:backups])
     end
   end

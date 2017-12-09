@@ -5,8 +5,8 @@ defmodule MixHelper do
 
   @basic_mix "defmodule MyApp.Mixfile do\n  defp deps do\n    [\n      {:cowboy, \"~> 1.0\"}\n    ]\n  end\nend"
   @main_config "use Mix.Config\n\nconfig :myapp,\necto_repos: [MyApp.Repo]\n\n" <>
-    "config :myapp, MyAppWeb.Endpoint,\nurl: [host: \"localhost\"]\n\n" <>
-    "# Configures Elixir's Logger\nconfig :logger, :console\n\nimport_config Mix.env.exs"
+                 "config :myapp, MyAppWeb.Endpoint,\nurl: [host: \"localhost\"]\n\n" <>
+                 "# Configures Elixir's Logger\nconfig :logger, :console\n\nimport_config Mix.env.exs"
   @test_config "use Mix.Config\n\nconfig :logger, level: :warn"
 
   def tmp_path do
@@ -33,9 +33,11 @@ defmodule MixHelper do
   def assert_file(file, match) do
     cond do
       is_list(match) ->
-      assert_file file, &(Enum.each(match, fn(m) -> assert &1 =~ m end))
+        assert_file(file, &Enum.each(match, fn m -> assert &1 =~ m end))
+
       is_binary(match) or Regex.regex?(match) ->
-        assert_file file, &(assert &1 =~ match)
+        assert_file(file, &assert(&1 =~ match))
+
       is_function(match, 1) ->
         assert_file(file)
         match.(File.read!(file))

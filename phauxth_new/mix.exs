@@ -7,7 +7,7 @@ defmodule Phauxth.New.Mixfile do
     [
       app: :phauxth_new,
       version: @version,
-      start_permanent: Mix.env == :prod,
+      start_permanent: Mix.env() == :prod,
       aliases: aliases(),
       elixir: "~> 1.4"
     ]
