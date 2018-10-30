@@ -16,7 +16,7 @@ defmodule <%= base %>Web.PasswordResetController do
     |> put_status(:created)
     |> render(<%= base %>Web.PasswordResetView, "info.json", %{info: message})
   end<% else %>
-    success(conn, message, page_path(conn, :index))
+    success(conn, message, Routes.page_path(conn, :index))
   end
 
   def edit(conn, %{"key" => key}) do
@@ -46,7 +46,7 @@ defmodule <%= base %>Web.PasswordResetController do
 <%= if api do %>
     render(conn, <%= base %>Web.PasswordResetView, "info.json", %{info: message})<% else %>
     delete_session(conn, :phauxth_session_id)
-    |> success(message, session_path(conn, :new))<% end %>
+    |> success(message, Routes.session_path(conn, :new))<% end %>
   end
 
   defp update_password({:error, %Ecto.Changeset{} = changeset}, conn, <%= if api do %>_<% end %>params) do

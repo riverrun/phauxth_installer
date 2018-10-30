@@ -37,7 +37,7 @@ defmodule <%= base %>Web.Authorize do
     put_status(conn, :unauthorized)
     |> render(<%= base %>Web.AuthView, "logged_in.json", [])
     |> halt<% else %>
-    error(conn, "You need to log out to view this page", page_path(conn, :index))<% end %>
+    error(conn, "You need to log out to view this page", Routes.page_path(conn, :index))<% end %>
   end
 
   # Plug to only allow authenticated users with the correct id to access the resource.
@@ -52,7 +52,7 @@ defmodule <%= base %>Web.Authorize do
         _opts
       ) do
     (id == to_string(current_user.id) and conn) ||<%= if api do %>error(conn, :forbidden, 403)<% else %>
-      error(conn, "You are not authorized to view this page", user_path(conn, :index))<% end %>
+      error(conn, "You are not authorized to view this page", Routes.user_path(conn, :index))<% end %>
   end<%= if api do %>
 
   def error(conn, status, code) do
@@ -85,6 +85,6 @@ defmodule <%= base %>Web.Authorize do
   def need_login(conn) do
     conn
     |> put_session(:request_path, current_path(conn))
-    |> error("You need to log in to view this page", session_path(conn, :new))
+    |> error("You need to log in to view this page", Routes.session_path(conn, :new))
   end<% end %>
 end

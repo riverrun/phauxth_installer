@@ -13,10 +13,10 @@ defmodule <%= base %>Web.ConfirmController do
         render(conn, <%= base %>Web.ConfirmView, "info.json", %{info: message})
       {:error, _message} ->
         error(conn, :unauthorized, 401)<% else %>
-        success(conn, message, session_path(conn, :new))
+        success(conn, message, Routes.session_path(conn, :new))
 
       {:error, message} ->
-        error(conn, message, session_path(conn, :new))<% end %>
+        error(conn, message, Routes.session_path(conn, :new))<% end %>
     end
   end
 end

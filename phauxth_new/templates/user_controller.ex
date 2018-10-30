@@ -34,13 +34,13 @@ defmodule <%= base %>Web.UserController do
       Accounts.Message.confirm_request(email, key)<% end %>
       conn
       |> put_status(:created)
-      |> put_resp_header("location", user_path(conn, :show, user))
+      |> put_resp_header("location", Routes.user_path(conn, :show, user))
       |> render("show.json", user: user)<% else %>
     case Accounts.create_user(user_params) do
       {:ok, user} ->
         Log.info(%Log{user: user.id, message: "user created"})<%= if confirm do %>
         Accounts.Message.confirm_request(email, key)<% end %>
-        success(conn, "User created successfully", session_path(conn, :new))
+        success(conn, "User created successfully", Routes.session_path(conn, :new))
 
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "new.html", changeset: changeset)<% end %>
@@ -63,7 +63,7 @@ defmodule <%= base %>Web.UserController do
       render(conn, "show.json", user: user)<% else %>
     case Accounts.update_user(user, user_params) do
       {:ok, user} ->
-        success(conn, "User updated successfully", user_path(conn, :show, user))
+        success(conn, "User updated successfully", Routes.user_path(conn, :show, user))
 
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "edit.html", user: user, changeset: changeset)<% end %>
@@ -75,6 +75,6 @@ defmodule <%= base %>Web.UserController do
 <%= if api do %>
     send_resp(conn, :no_content, "")<% else %>
     delete_session(conn, :phauxth_session_id)
-    |> success("User deleted successfully", session_path(conn, :new))<% end %>
+    |> success("User deleted successfully", Routes.session_path(conn, :new))<% end %>
   end
 end

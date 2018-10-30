@@ -11,11 +11,11 @@
     <tr>
       <td><%= user.email %></td>
       <td class="text-right">
-        <span><%= link "Show", to: user_path(@conn, :show, user), class: "btn btn-default btn-xs" %></span>
+        <span><%= link "Show", to: Routes.user_path(@conn, :show, user), class: "btn btn-default btn-xs" %></span>
       </td>
     </tr>
 <% end %>
   </tbody>
 </table>
 
-<span><%= link "New User", to: user_path(@conn, :new) %></span>
+<span><%= link "New User", to: Routes.user_path(@conn, :new) %></span>
