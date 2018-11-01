@@ -29,10 +29,10 @@ defmodule <%= base %>Web.SessionController do
 
         Login.add_session(conn, session_id, user.id)<%= if remember do %>
         |> add_remember_me(user.id, params)<% end %>
-        |> login_success(user_path(conn, :index))
+        |> login_success(Routes.user_path(conn, :index))
 
       {:error, message} ->
-        error(conn, message, session_path(conn, :new))<% end %>
+        error(conn, message, Routes.session_path(conn, :new))<% end %>
     end
   end<%= if not api do %>
 
@@ -42,7 +42,7 @@ defmodule <%= base %>Web.SessionController do
 
     delete_session(conn, :phauxth_session_id)<%= if remember do %>
     |> Phauxth.Remember.delete_rem_cookie()<% end %>
-    |> success("You have been logged out", page_path(conn, :index))
+    |> success("You have been logged out", Routes.page_path(conn, :index))
   end<%= if remember do %>
 
   # This function adds a remember_me cookie to the conn.
