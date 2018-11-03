@@ -1,11 +1,13 @@
-<div class="jumbotron">
-  <h2><%= gettext "Welcome to %{name}! - and Phauxth", name: "Phoenix" %></h2>
-  <p class="lead">A secure and extensible authentication library for Plug-based applications</p>
-</div>
+<section class="phx-hero">
+  <h1><%= gettext "Welcome to %{name}!", name: "Phauxth" %></h1>
+  <p>A secure and extensible authentication library for Plug-based applications</p>
+  <br/>
+  <h4><%= gettext "oh yes, and welcome to Phoenix as well 😊" %></h4>
+</section>
 
-<div class="row marketing">
-  <div class="col-lg-6">
-    <h4>Phauxth authentication</h4>
+<section class="row">
+  <article class="column">
+    <h2>Phauxth authentication</h2>
     <ul>
       <li>
         <a href="https://hexdocs.pm/phauxth">Docs</a>
@@ -14,10 +16,9 @@
         <a href="https://github.com/riverrun/phauxth">Source</a>
       </li>
     </ul>
-  </div>
-
-  <div class="col-lg-6">
-    <h4>Phoenix web framework</h4>
+  </article>
+  <article class="column">
+    <h2>Phoenix web framework</h2>
     <ul>
       <li>
         <a href="http://phoenixframework.org/docs/overview">Phoenix guides</a>
@@ -26,5 +27,5 @@
         <a href="https://github.com/phoenixframework/phoenix">Phoenix source</a>
       </li>
     </ul>
-  </div>
-</div>
+  </article>
+</section>

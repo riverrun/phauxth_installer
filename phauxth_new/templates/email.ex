@@ -1,6 +1,6 @@
-defmodule <%= base %>.Accounts.Message do
+defmodule <%= base %>Web.Email do
   @moduledoc """
-  A module for sending messages, by email or phone, to the user.
+  A module for sending emails to the user.
 
   This module provides functions to be used with the Phauxth authentication
   library when confirming users or handling password resets. It uses
@@ -19,11 +19,11 @@ defmodule <%= base %>.Accounts.Message do
 
   See [Bamboo](https://github.com/thoughtbot/bamboo) for more information.
 
-  ## Other email / phone library
+  ## Other email library
 
   If you do not want to use Bamboo, follow the instructions below:
 
-  1. Edit this file, using the email / phone library of your choice
+  1. Edit this file, using the email library of your choice
   2. Remove the lib/<%= base_name %>/mailer.ex file
   3. Remove the Bamboo entries in the config/config.exs and config/test.exs files
   4. Remove bamboo from the deps section in the mix.exs file

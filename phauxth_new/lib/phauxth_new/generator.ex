@@ -26,7 +26,7 @@ defmodule Phauxth.New.Generator do
   def update_mix(confirm) do
     entry = mix_input(confirm) |> EEx.eval_string()
     {:ok, mixfile} = File.read("mix.exs")
-    new_mix = String.replace(mixfile, ~r/{:cowboy, "~> \d\.\d+"}/, entry <> "      \\0")
+    new_mix = String.replace(mixfile, ~r/{:plug_cowboy, "~> \d\.\d+"}/, entry <> "      \\0")
     File.write("mix.exs", new_mix)
   end
 
@@ -62,30 +62,25 @@ defmodule Phauxth.New.Generator do
   def confirm_deps_message(_), do: "Run `mix deps.get`."
 
   defp get_endpoint(base_name) do
-    web = base_name <> "_web"
-
-    Macro.camelize(web)
+    base_name <> "_web"
+    |> Macro.camelize()
     |> Module.concat(Endpoint)
   end
 
-  defp gen_token_salt(length) do
-    :crypto.strong_rand_bytes(length) |> Base.encode64() |> binary_part(0, length)
-  end
-
   defp mix_input(false) do
-    "{:phauxth, \"~> 1.2\"},\n" <> "      {:bcrypt_elixir, \"~> 1.0\"},\n"
+    "{:phauxth, \"~> 2.0.0-rc\"},\n" <> "      {:argon2_elixir, \"~> 1.3\"},\n"
   end
 
   defp mix_input(true) do
-    mix_input(false) <> "      {:bamboo, \"~> 0.8\"},\n"
+    mix_input(false) <> "      {:bamboo, \"~> 1.1\"},\n"
   end
 
-  defp config_input(false, _, _) do
+  defp config_input(false, _, base) do
     """
     # Phauxth authentication configuration
     config :phauxth,
-      token_salt: \"#{gen_token_salt(8)}\",
-      endpoint: <%= endpoint %>\n
+      user_context: #{base}.Accounts,
+      token_module: #{base}Web.Auth.Token\n
     """
   end
 
@@ -93,7 +88,7 @@ defmodule Phauxth.New.Generator do
     config_input(false, base_name, base) <>
       """
       # Mailer configuration
-      config :#{base_name}, #{base}.Mailer,
+      config :#{base_name}, #{base}Web.Mailer,
         adapter: Bamboo.LocalAdapter\n
       """
   end
@@ -101,10 +96,8 @@ defmodule Phauxth.New.Generator do
   defp test_config_input(false, _, _) do
     """
     \n\n# Comeonin password hashing test config
-    #config :argon2_elixir,
-      #t_cost: 2,
-      #m_cost: 8
-    config :bcrypt_elixir, log_rounds: 4
+    config :argon2_elixir, t_cost: 2, m_cost: 8
+    #config :bcrypt_elixir, log_rounds: 4
     #config :pbkdf2_elixir, rounds: 1
     """
   end

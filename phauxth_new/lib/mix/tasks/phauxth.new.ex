@@ -43,6 +43,10 @@ defmodule Mix.Tasks.Phauxth.New do
     {:eex, "user_migration.exs", "priv/repo/migrations/timestamp_create_users.exs"},
     {:eex, "accounts.ex", "/accounts/accounts.ex"},
     {:eex, "accounts_test.exs", "test/namespace/accounts/accounts_test.exs"},
+    {:eex, "session.ex", "/sessions/session.ex"},
+    {:eex, "session_migration.exs", "priv/repo/migrations/timestamp_create_sessions.exs"},
+    {:eex, "sessions.ex", "/sessions/sessions.ex"},
+    {:eex, "sessions_test.exs", "test/namespace/sessions/sessions_test.exs"},
     {:eex, "router.ex", "_web/router.ex"},
     {:eex, "authorize.ex", "_web/controllers/authorize.ex"},
     {:eex, "session_controller.ex", "_web/controllers/session_controller.ex"},
@@ -54,7 +58,8 @@ defmodule Mix.Tasks.Phauxth.New do
     {:eex, "session_view.ex", "_web/views/session_view.ex"},
     {:eex, "user_controller.ex", "_web/controllers/user_controller.ex"},
     {:eex, "user_controller_test.exs", "test/namespace_web/controllers/user_controller_test.exs"},
-    {:eex, "user_view.ex", "_web/views/user_view.ex"}
+    {:eex, "user_view.ex", "_web/views/user_view.ex"},
+    {:eex, "phx_token.ex", "_web/auth/token.ex"}
   ]
 
   @phx_api [
@@ -66,17 +71,18 @@ defmodule Mix.Tasks.Phauxth.New do
   @phx_html [
     {:text, "layout_app.html.eex", "_web/templates/layout/app.html.eex"},
     {:text, "page_index.html.eex", "_web/templates/page/index.html.eex"},
-    {:eex, "session_new.html.eex", "_web/templates/session/new.html.eex"},
-    {:eex, "edit.html.eex", "_web/templates/user/edit.html.eex"},
+    {:text, "session_new.html.eex", "_web/templates/session/new.html.eex"},
+    {:text, "edit.html.eex", "_web/templates/user/edit.html.eex"},
     {:text, "index.html.eex", "_web/templates/user/index.html.eex"},
     {:text, "new.html.eex", "_web/templates/user/new.html.eex"},
     {:text, "show.html.eex", "_web/templates/user/show.html.eex"}
   ]
 
   @phx_confirm [
-    {:eex, "message.ex", "/accounts/message.ex"},
-    {:eex, "mailer.ex", "/mailer.ex"},
-    {:eex, "message_test.exs", "test/namespace/accounts/message_test.exs"},
+    {:eex, "email.ex", "_web/email.ex"},
+    {:eex, "mailer.ex", "_web/mailer.ex"},
+    {:eex, "email_test.exs", "test/namespace_web/email_test.exs"},
+    {:eex, "confirm_login.ex", "_web/auth/login.ex"},
     {:eex, "confirm_controller.ex", "_web/controllers/confirm_controller.ex"},
     {
       :eex,

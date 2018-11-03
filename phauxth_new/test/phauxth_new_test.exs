@@ -17,7 +17,7 @@ defmodule Mix.Tasks.Phauxth.NewTest do
       assert_file("lib/phauxth_new_web/templates/session/new.html.eex")
 
       refute_file("lib/phauxth_new/accounts/message.ex")
-      refute_file("lib/phauxth_new/mailer.ex")
+      refute_file("lib/phauxth_new_web/mailer.ex")
 
       assert_file("config/config.exs", fn file ->
         assert file =~ ~s(config :phauxth)
@@ -34,7 +34,7 @@ defmodule Mix.Tasks.Phauxth.NewTest do
 
       assert_file("lib/phauxth_new_web/controllers/session_controller.ex", fn file ->
         assert file =~ ~s(alias Phauxth.Login)
-        assert file =~ "Login.add_session(conn, session_id, user.id)"
+        assert file =~ "Sessions.create_session(%{user_id: user.id})"
         refute file =~ ~s(Phauxth.Remember.delete_rem_cookie)
       end)
 
@@ -60,7 +60,7 @@ defmodule Mix.Tasks.Phauxth.NewTest do
         assert file =~ ~s(config :phauxth)
       end)
 
-      assert_file("lib/phauxth_new/mailer.ex", fn file ->
+      assert_file("lib/phauxth_new_web/mailer.ex", fn file ->
         assert file =~ ~s(use Bamboo.Mailer, otp_app: :phauxth_new)
       end)
 
@@ -72,12 +72,12 @@ defmodule Mix.Tasks.Phauxth.NewTest do
       end)
 
       assert_file("lib/phauxth_new_web/controllers/session_controller.ex", fn file ->
-        assert file =~ ~s(alias Phauxth.Confirm)
+        assert file =~ ~s(alias PhauxthNewWeb.Auth.Login)
       end)
 
       assert_file("test/support/auth_case.ex", fn file ->
         assert file =~ "import Ecto.Changeset"
-        assert file =~ "change(%{confirmed_at: DateTime.utc_now()})"
+        assert file =~ "change(%{confirmed_at: now()})"
       end)
 
       assert_file("lib/phauxth_new/accounts/user.ex", fn file ->
@@ -86,7 +86,7 @@ defmodule Mix.Tasks.Phauxth.NewTest do
       end)
 
       assert_file("lib/phauxth_new/accounts/accounts.ex", fn file ->
-        assert file =~ "change(user, %{confirmed_at: DateTime.utc_now()})"
+        assert file =~ "|> User.password_reset_changeset"
       end)
 
       assert_received {:mix_shell, :info, ["\nWe are almost ready!" <> _ = message]}
@@ -116,11 +116,10 @@ defmodule Mix.Tasks.Phauxth.NewTest do
       assert_file("lib/phauxth_new_web/controllers/authorize.ex")
 
       refute_file("lib/phauxth_new/accounts/message.ex")
-      refute_file("lib/phauxth_new/mailer.ex")
+      refute_file("lib/phauxth_new_web/mailer.ex")
 
       assert_file("config/config.exs", fn file ->
-        assert file =~ ~s(config :phauxth,\n  token_salt: ")
-        assert file =~ ~s(endpoint: PhauxthNewWeb.Endpoint)
+        assert file =~ ~s(config :phauxth)
       end)
 
       assert_file("lib/phauxth_new_web/router.ex", fn file ->
@@ -146,11 +145,10 @@ defmodule Mix.Tasks.Phauxth.NewTest do
       assert_file("lib/phauxth_new_web/views/confirm_view.ex")
 
       assert_file("config/config.exs", fn file ->
-        assert file =~ ~s(config :phauxth,\n  token_salt: ")
-        assert file =~ ~s(endpoint: PhauxthNewWeb.Endpoint)
+        assert file =~ ~s(config :phauxth)
       end)
 
-      assert_file("lib/phauxth_new/mailer.ex", fn file ->
+      assert_file("lib/phauxth_new_web/mailer.ex", fn file ->
         assert file =~ ~s(use Bamboo.Mailer, otp_app: :phauxth_new)
       end)
 

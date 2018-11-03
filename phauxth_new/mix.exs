@@ -1,7 +1,7 @@
 defmodule Phauxth.New.Mixfile do
   use Mix.Project
 
-  @version "1.2.0"
+  @version "2.0.0-rc.0"
 
   def project do
     [
@@ -9,7 +9,7 @@ defmodule Phauxth.New.Mixfile do
       version: @version,
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
-      elixir: "~> 1.4"
+      elixir: "~> 1.7"
     ]
   end
 

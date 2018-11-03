@@ -1,91 +1,97 @@
 defmodule <%= base %>.Accounts do
   @moduledoc """
-  The boundary for the Accounts system.
+  The Accounts context.
   """
 
-  import Ecto.{Query, Changeset}, warn: false<%= if confirm do %>
-  alias Phauxth.Log<% end %>
-  alias <%= base %>.{Accounts.User, Repo}
+  import Ecto.Query, warn: false
 
+  alias <%= base %>.{Accounts.User, Repo, Sessions, Sessions.Session}
+
+  @doc """
+  Returns the list of users.
+  """
   def list_users do
     Repo.all(User)
   end
 
-  def get(id), do: Repo.get(User, id)
+  @doc """
+  Gets a single user.
+  """
+  def get_user(id), do: Repo.get(User, id)
+
+  @doc """
+  Gets a user based on the params.
+
+  This is used by Phauxth to get user information.
+  """
+  def get_by(%{"session_id" => session_id}) do
+    with %Session{user_id: user_id} <- Sessions.get_session(session_id),
+         do: get_user(user_id)
+  end
 
   def get_by(%{"email" => email}) do
     Repo.get_by(User, email: email)
   end
 
+  @doc """
+  Creates a user.
+  """
   def create_user(attrs) do
     %User{}
     |> User.create_changeset(attrs)
     |> Repo.insert()
-  end<%= if confirm do %>
-
-  def confirm_user(%User{} = user) do
-    change(user, %{confirmed_at: DateTime.utc_now()}) |> Repo.update()
   end
 
-  def create_password_reset(endpoint, attrs) do
-    with %User{} = user <- get_by(attrs) do
-      change(user, %{reset_sent_at: DateTime.utc_now}) |> Repo.update
-      Log.info(%Log{user: user.id, message: "password reset requested"})
-      Phauxth.Token.sign(endpoint, attrs)
-    end
-  end<% end %>
-
+  @doc """
+  Updates a user.
+  """
   def update_user(%User{} = user, attrs) do
     user
     |> User.changeset(attrs)
     |> Repo.update()
-  end<%= if confirm do %>
+  end
 
-  def update_password(%User{} = user, attrs) do
-    user
-    |> User.create_changeset(attrs)<%= if api do %>
-    |> change(%{reset_sent_at: nil})<% else %>
-    |> change(%{reset_sent_at: nil, sessions: %{}})<% end %>
-    |> Repo.update()
-  end<% end %>
-
+  @doc """
+  Deletes a User.
+  """
   def delete_user(%User{} = user) do
     Repo.delete(user)
   end
 
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking user changes.
+  """
   def change_user(%User{} = user) do
     User.changeset(user, %{})
-  end<%= if not api do %>
+  end<%= if confirm do %>
 
-  def list_sessions(user_id) do
-    with user when is_map(user) <- Repo.get(User, user_id), do: user.sessions
+  @doc """
+  Confirms a user's email.
+  """
+  def confirm_user(%User{} = user) do
+    user |> User.confirm_changeset() |> Repo.update()
   end
 
-  def add_session(%User{sessions: sessions} = user, session_id, timestamp) do
-    change(user, sessions: put_in(sessions, [session_id], timestamp))
-    |> Repo.update
+  @doc """
+  Makes a password reset request.
+  """
+  def create_password_reset(attrs) do
+    with %User{} = user <- get_by(attrs) do
+      user
+      |> User.password_reset_changeset(DateTime.utc_now() |> DateTime.truncate(:second))
+      |> Repo.update()
+    end
   end
 
-  def delete_session(%User{sessions: sessions} = user, session_id) do
-    change(user, sessions: Map.delete(sessions, session_id))
-    |> Repo.update
-  end
+  @doc """
+  Updates a user's password.
+  """
+  def update_password(%User{} = user, attrs) do
+    Sessions.delete_user_sessions(user)
 
-  def remove_old_sessions(session_age) do
-    now = System.system_time(:second)
-    Enum.map(
-      list_users(),
-      &(change(
-          &1,
-          sessions:
-            :maps.filter(
-              fn _, time ->
-                time + session_age > now
-              end,
-              &1.sessions
-            )
-        )
-        |> Repo.update())
-    )
+    user
+    |> User.create_changeset(attrs)
+    |> User.password_reset_changeset(nil)
+    |> Repo.update()
   end<% end %>
 end

@@ -2,10 +2,13 @@ defmodule <%= base %>Web.SessionController do
   use <%= base %>Web, :controller
 
   import <%= base %>Web.Authorize
-  alias <%= base %>.Accounts<%= if confirm do %>
-  alias Phauxth.Confirm.Login<% else %>
-  alias Phauxth.Login<% end %><%= if api do %>
 
+  alias <%= base %>.Sessions<%= if confirm do %>
+  alias <%= base %>Web.Auth.Login<% else %>
+  alias Phauxth.Login<% end %><%= if api do %>
+  alias <%= base %>Web.Auth.Token
+
+  # the following plugs are defined in the controllers/authorize.ex file
   plug :guest_check when action in [:create]<% else %>
 
   plug :guest_check when action in [:new, :create]
@@ -15,34 +18,42 @@ defmodule <%= base %>Web.SessionController do
     render(conn, "new.html")
   end<% end %>
 
-  # If you are using Argon2 or Pbkdf2, add crypto: Comeonin.Argon2
-  # or crypto: Comeonin.Pbkdf2 to Login.verify (after Accounts)
   def create(conn, %{"session" => params}) do
-    case Login.verify(params, Accounts) do
+    case Login.verify(params) do
       {:ok, user} -><%= if api do %>
-        token = Phauxth.Token.sign(conn, user.id)
+        token = Token.sign(conn, user.id)
         render(conn, "info.json", %{info: token})
       {:error, _message} ->
         error(conn, :unauthorized, 401)<% else %>
-        session_id = Login.gen_session_id("F")
-        Accounts.add_session(user, session_id, System.system_time(:second))
+        {:ok, %{id: session_id}} = Sessions.create_session(%{user_id: user.id})
 
-        Login.add_session(conn, session_id, user.id)<%= if remember do %>
+        conn
+        |> delete_session(:request_path)
+        |> put_session(:phauxth_session_id, session_id)
+        |> configure_session(renew: true)<%= if remember do %>
         |> add_remember_me(user.id, params)<% end %>
-        |> login_success(Routes.user_path(conn, :index))
+        |> put_flash(:info, "User successfully logged in.")
+        |> redirect(to: get_session(conn, :request_path) || Routes.user_path(conn, :index))
 
       {:error, message} ->
-        error(conn, message, Routes.session_path(conn, :new))<% end %>
+        conn
+        |> put_flash(:error, message)
+        |> redirect(to: Routes.session_path(conn, :new))<% end %>
     end
   end<%= if not api do %>
 
   def delete(%Plug.Conn{assigns: %{current_user: user}} = conn, _) do
-    <<session_id::binary-size(17), _::binary>> = get_session(conn, :phauxth_session_id)
-    Accounts.delete_session(user, session_id)
+    {:ok, _} =
+      conn
+      |> get_session(:phauxth_session_id)
+      |> Sessions.get_session()
+      |> Sessions.delete_session()
 
-    delete_session(conn, :phauxth_session_id)<%= if remember do %>
+    conn
+    |> delete_session(:phauxth_session_id)<%= if remember do %>
     |> Phauxth.Remember.delete_rem_cookie()<% end %>
-    |> success("You have been logged out", Routes.page_path(conn, :index))
+    |> put_flash(:info, "User successfully logged out.")
+    |> redirect(to: Routes.page_path(conn, :index))
   end<%= if remember do %>
 
   # This function adds a remember_me cookie to the conn.
