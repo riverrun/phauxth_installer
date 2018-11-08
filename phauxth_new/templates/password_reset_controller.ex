@@ -10,9 +10,10 @@ defmodule <%= base %>Web.PasswordResetController do
   end<% end %>
 
   def create(conn, %{"password_reset" => %{"email" => email}}) do
-    Accounts.create_password_reset(%{"email" => email})
-    key = Token.sign(%{"email" => email})
-    Email.reset_request(email, key)<%= if api do %>
+    if Accounts.create_password_reset(%{"email" => email}) do
+      key = Token.sign(%{"email" => email})
+      Email.reset_request(email, key)
+    end<%= if api do %>
 
     conn
     |> put_status(:created)

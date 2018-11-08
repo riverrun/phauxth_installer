@@ -19,8 +19,13 @@ defmodule Mix.Tasks.Phauxth.NewTest do
       refute_file("lib/phauxth_new/accounts/message.ex")
       refute_file("lib/phauxth_new_web/mailer.ex")
 
+      assert_file("mix.exs", fn file ->
+        assert file =~ ~s(:argon2_elixir, "~> 1.3")
+      end)
+
       assert_file("config/config.exs", fn file ->
         assert file =~ ~s(config :phauxth)
+        assert file =~ ~s(user_context: PhauxthNew.Accounts)
       end)
 
       assert_file("lib/phauxth_new_web/router.ex", fn file ->
@@ -44,7 +49,7 @@ defmodule Mix.Tasks.Phauxth.NewTest do
 
       assert_received {:mix_shell, :info, ["\nWe are almost ready!" <> _ = message]}
       refute message =~ ~s(bamboo has been added to the mix.exs file)
-      assert message =~ ~s(If you want to use argon2_elixir or pbkdf2_elixir)
+      assert message =~ ~s(If you want to use bcrypt_elixir or pbkdf2_elixir)
       assert message =~ ~s(And to start the server)
     end)
   end
@@ -56,8 +61,14 @@ defmodule Mix.Tasks.Phauxth.NewTest do
       assert_file("lib/phauxth_new_web/controllers/confirm_controller.ex")
       assert_file("test/phauxth_new_web/controllers/confirm_controller_test.exs")
 
+      assert_file("mix.exs", fn file ->
+        assert file =~ ~s(:argon2_elixir, "~> 1.3")
+        assert file =~ ~s(:bamboo, "~> 1.1")
+      end)
+
       assert_file("config/config.exs", fn file ->
         assert file =~ ~s(config :phauxth)
+        assert file =~ ~s(user_context: PhauxthNew.Accounts)
       end)
 
       assert_file("lib/phauxth_new_web/mailer.ex", fn file ->
@@ -120,6 +131,7 @@ defmodule Mix.Tasks.Phauxth.NewTest do
 
       assert_file("config/config.exs", fn file ->
         assert file =~ ~s(config :phauxth)
+        assert file =~ ~s(user_context: PhauxthNew.Accounts)
       end)
 
       assert_file("lib/phauxth_new_web/router.ex", fn file ->
@@ -146,6 +158,7 @@ defmodule Mix.Tasks.Phauxth.NewTest do
 
       assert_file("config/config.exs", fn file ->
         assert file =~ ~s(config :phauxth)
+        assert file =~ ~s(user_context: PhauxthNew.Accounts)
       end)
 
       assert_file("lib/phauxth_new_web/mailer.ex", fn file ->

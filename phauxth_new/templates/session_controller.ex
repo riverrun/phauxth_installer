@@ -21,7 +21,12 @@ defmodule <%= base %>Web.SessionController do
   def create(conn, %{"session" => params}) do
     case Login.verify(params) do
       {:ok, user} -><%= if api do %>
-        token = Token.sign(conn, user.id)
+        # The Sessions.create_session function is only needed if you are tracking
+        # sessions in the database. If you do not want to store session data in the
+        # database, remove this line, the <%= base %>.Sessions alias and the
+        # <%= base %>.Sessions and <%= base %>.Sessions.Session modules
+        {:ok, %{id: session_id}} = Sessions.create_session(%{user_id: user.id})
+        token = Token.sign(%{session_id: session_id})
         render(conn, "info.json", %{info: token})
       {:error, _message} ->
         error(conn, :unauthorized, 401)<% else %>
@@ -42,7 +47,7 @@ defmodule <%= base %>Web.SessionController do
     end
   end<%= if not api do %>
 
-  def delete(%Plug.Conn{assigns: %{current_user: user}} = conn, _) do
+  def delete(%Plug.Conn{assigns: %{current_user: _user}} = conn, _) do
     {:ok, _} =
       conn
       |> get_session(:phauxth_session_id)

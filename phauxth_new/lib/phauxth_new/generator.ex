@@ -44,9 +44,13 @@ defmodule Phauxth.New.Generator do
     File.write("config/test.exs", test_conf <> test_entry)
   end
 
-  def timestamp do
+  def gen_token_salt(len \\ 8) do
+    :crypto.strong_rand_bytes(len) |> Base.encode64() |> binary_part(0, len)
+  end
+
+  def timestamp(diff) do
     {{y, m, d}, {hh, mm, ss}} = :calendar.universal_time()
-    "#{y}#{pad(m)}#{pad(d)}#{pad(hh)}#{pad(mm)}#{pad(ss)}"
+    "#{y}#{pad(m)}#{pad(d)}#{pad(hh)}#{pad(mm)}#{pad(ss + diff)}"
   end
 
   def confirm_deps_message(true) do
@@ -54,12 +58,17 @@ defmodule Phauxth.New.Generator do
     bamboo has been added to the mix.exs file as a dependency.
     If you want to use a different library to email users, edit
     the mix.exs file.
-
-    Run `mix deps.get`.
+    #{confirm_deps_message(false)}
     """
   end
 
-  def confirm_deps_message(_), do: "Run `mix deps.get`."
+  def confirm_deps_message(_) do
+    """
+    Install dependencies:
+
+        mix deps.get
+    """
+  end
 
   defp get_endpoint(base_name) do
     base_name <> "_web"
@@ -80,6 +89,7 @@ defmodule Phauxth.New.Generator do
     # Phauxth authentication configuration
     config :phauxth,
       user_context: #{base}.Accounts,
+      crypto_module: Comeonin.Argon2,
       token_module: #{base}Web.Auth.Token\n
     """
   end

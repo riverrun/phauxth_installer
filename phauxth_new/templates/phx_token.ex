@@ -9,7 +9,7 @@ defmodule <%= base %>Web.Auth.Token do
   alias <%= base %>Web.Endpoint
 
   @max_age 14_400
-  @token_salt "JaKgaBf2"
+  @token_salt "<%= Phauxth.New.Generator.gen_token_salt() %>"
 
   @impl true
   def sign(data, opts \\ []) do

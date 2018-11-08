@@ -2,12 +2,11 @@ defmodule <%= base %>Web.AuthCase do
   use Phoenix.ConnTest<%= if confirm do %>
 
   import Ecto.Changeset
-  alias <%= base %>.{Accounts, Repo, Sessions}<% else %>
 
-    alias <%= base %>.Accounts<% end %>
-<%= if confirm || api do %>
-    alias <%= base %>Web.Auth.Token
-<% end %>
+  alias <%= base %>.{Accounts, Repo, Sessions}
+  alias <%= base %>Web.Auth.Token<% else %>
+  alias <%= base %>.{Accounts, Sessions}<% end %><%= if api do %>
+  alias <%= base %>Web.Auth.Token<% end %>
 
   def add_user(email) do
     user = %{email: email, password: "reallyHard2gue$$"}
@@ -46,9 +45,9 @@ defmodule <%= base %>Web.AuthCase do
     conn
     |> put_session(:phauxth_session_id, session_id)
     |> configure_session(renew: true)
-  end<% end %>
+  end<% end %><%= if confirm do %>
 
   defp now do
     DateTime.utc_now() |> DateTime.truncate(:second)
-  end
+  end<% end %>
 end

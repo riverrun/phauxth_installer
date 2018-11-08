@@ -4,8 +4,8 @@ defmodule <%= base %>Web.UserController do
   import <%= base %>Web.Authorize
 
   alias Phauxth.Log
-  alias <%= base %>.{Accounts, Accounts.User}
-  alias <%= base %>Web.{Auth.Token, Email}<%= if api do %>
+  alias <%= base %>.{Accounts, Accounts.User}<%= if confirm do %>
+  alias <%= base %>Web.{Auth.Token, Email}<% end %><%= if api do %>
 
   action_fallback <%= base %>Web.FallbackController<% end %>
 
@@ -26,14 +26,12 @@ defmodule <%= base %>Web.UserController do
   end<% end %><%= if confirm do %>
 
   def create(conn, %{"user" => %{"email" => email} = user_params}) do
-    key = Token.sign(conn, %{"email" => email})<% else %>
+    key = Token.sign(%{"email" => email})<% else %>
 
   def create(conn, %{"user" => user_params}) do<% end %><%= if api do %>
     with {:ok, user} <- Accounts.create_user(user_params) do
-      Log.info(%Log{user: user.id, message: "user created"})
-<%= if confirm do %>
-      Email.confirm_request(email, key)
-<% end %>
+      Log.info(%Log{user: user.id, message: "user created"})<%= if confirm do %>
+      Email.confirm_request(email, key)<% end %>
       conn
       |> put_status(:created)
       |> put_resp_header("location", Routes.user_path(conn, :show, user))

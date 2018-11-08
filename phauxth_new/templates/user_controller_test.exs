@@ -95,6 +95,7 @@ defmodule <%= base %>Web.UserControllerTest do
       assert json_response(conn, 422)["errors"] != %{}<% else %>
       assert html_response(conn, 200) =~ "Edit User"<% end %>
     end
+  end
 
   describe "delete user" do
     @tag login: "reg@example.com"
@@ -105,11 +106,12 @@ defmodule <%= base %>Web.UserControllerTest do
       refute Accounts.get_user(user.id)
     end
 
-    @tag login: "reg@example.com"
-    test "cannot delete other user", %{conn: conn, other: other} do
+    @tag login: "reg@example.com"<%= if api do %>
+      test "cannot delete other user", %{conn: conn, other: other} do<% else %>
+      test "cannot delete other user", %{conn: conn, user: user, other: other} do<% end %>
       conn = delete(conn, Routes.user_path(conn, :delete, other))<%= if api do %>
       assert json_response(conn, 403)["errors"]["detail"] =~ "not authorized"<% else %>
-      assert redirected_to(conn) == Routes.user_path(conn, :index)<% end %>
+      assert redirected_to(conn) == Routes.user_path(conn, :show, user)<% end %>
       assert Accounts.get_user(other.id)
     end
   end

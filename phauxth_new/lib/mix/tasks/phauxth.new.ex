@@ -75,6 +75,7 @@ defmodule Mix.Tasks.Phauxth.New do
     {:text, "edit.html.eex", "_web/templates/user/edit.html.eex"},
     {:text, "index.html.eex", "_web/templates/user/index.html.eex"},
     {:text, "new.html.eex", "_web/templates/user/new.html.eex"},
+    {:text, "form.html.eex", "_web/templates/user/form.html.eex"},
     {:text, "show.html.eex", "_web/templates/user/show.html.eex"}
   ]
 
@@ -158,9 +159,9 @@ defmodule Mix.Tasks.Phauxth.New do
 
     We are almost ready!
 
-    bcrypt_elixir has been added to the mix.exs file as a dependency.
-    If you want to use argon2_elixir or pbkdf2_elixir instead, edit
-    the mix.exs file, replacing bcrypt_elixir with the hashing library
+    argon2_elixir has been added to the mix.exs file as a dependency.
+    If you want to use bcrypt_elixir or pbkdf2_elixir instead, edit
+    the mix.exs file, replacing argon2_elixir with the hashing library
     you want to use.
 
     #{confirm_deps_message(confirm)}
@@ -175,7 +176,7 @@ defmodule Mix.Tasks.Phauxth.New do
 
     And to start the server:
 
-        mix phx.server
+        iex -S mix phx.server
 
     """)
   end
@@ -186,7 +187,8 @@ defmodule Mix.Tasks.Phauxth.New do
 
       target =
         case target do
-          "priv" <> _ -> String.replace(target, "timestamp", timestamp())
+          "priv/repo/migrations/timestamp_create_users.exs" -> String.replace(target, "timestamp", timestamp(0))
+          "priv/repo/migrations/timestamp_create_sessions.exs" -> String.replace(target, "timestamp", timestamp(2))
           "test/namespace" <> _ -> String.replace(target, "test/namespace", "test/#{name}")
           "test" <> _ -> target
           _ -> "lib/#{name}" <> target

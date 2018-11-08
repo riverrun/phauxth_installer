@@ -1,22 +1,28 @@
 defmodule <%= base %>Web.ConfirmController do
   use <%= base %>Web, :controller
 
-  import <%= base %>Web.Authorize
+  alias Phauxth.Confirm
   alias <%= base %>.Accounts
+  alias <%= base %>Web.Email
 
   def index(conn, params) do
-    case Phauxth.Confirm.verify(params, Accounts) do
+    case Confirm.verify(params) do
       {:ok, user} ->
         Accounts.confirm_user(user)
-        message = "Your account has been confirmed"
-        Accounts.Message.confirm_success(user.email)<%= if api do %>
+        Email.confirm_success(user.email)<%= if api do %>
         render(conn, <%= base %>Web.ConfirmView, "info.json", %{info: message})
+
       {:error, _message} ->
         error(conn, :unauthorized, 401)<% else %>
-        success(conn, message, Routes.session_path(conn, :new))
+
+        conn
+        |> put_flash(:info, "Your account has been confirmed")
+        |> redirect(to: Routes.session_path(conn, :new))
 
       {:error, message} ->
-        error(conn, message, Routes.session_path(conn, :new))<% end %>
+        conn
+        |> put_flash(:error, message)
+        |> redirect(to: Routes.session_path(conn, :new))<% end %>
     end
   end
 end

@@ -3,7 +3,7 @@ Mix.shell(Mix.Shell.Process)
 defmodule MixHelper do
   import ExUnit.Assertions
 
-  @basic_mix "defmodule MyApp.Mixfile do\n  defp deps do\n    [\n      {:cowboy, \"~> 1.0\"}\n    ]\n  end\nend"
+  @basic_mix "defmodule MyApp.Mixfile do\n  defp deps do\n    [\n      {:plug_cowboy, \"~> 2.0\"}\n    ]\n  end\nend"
   @main_config "use Mix.Config\n\nconfig :myapp,\necto_repos: [MyApp.Repo]\n\n" <>
                  "config :myapp, MyAppWeb.Endpoint,\nurl: [host: \"localhost\"]\n\n" <>
                  "# Configures Elixir's Logger\nconfig :logger, :console\n\nimport_config Mix.env.exs"
