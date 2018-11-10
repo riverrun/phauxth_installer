@@ -71,7 +71,7 @@ defmodule Mix.Tasks.Phauxth.New do
   @phx_html [
     {:text, "layout_app.html.eex", "_web/templates/layout/app.html.eex"},
     {:text, "page_index.html.eex", "_web/templates/page/index.html.eex"},
-    {:text, "session_new.html.eex", "_web/templates/session/new.html.eex"},
+    {:eex, "session_new.html.eex", "_web/templates/session/new.html.eex"},
     {:text, "edit.html.eex", "_web/templates/user/edit.html.eex"},
     {:text, "index.html.eex", "_web/templates/user/index.html.eex"},
     {:text, "new.html.eex", "_web/templates/user/new.html.eex"},
