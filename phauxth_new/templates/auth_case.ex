@@ -32,7 +32,8 @@ defmodule <%= base %>Web.AuthCase do
   end<% end %><%= if api do %>
 
   def add_token_conn(conn, user) do
-    user_token = Token.sign(%{"user_id" => user.id})
+    {:ok, %{id: session_id}} = Sessions.create_session(%{user_id: user.id})
+    user_token = Token.sign(%{"session_id" => session_id})
 
     conn
     |> put_req_header("accept", "application/json")

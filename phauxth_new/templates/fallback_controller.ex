@@ -4,6 +4,7 @@ defmodule <%= base %>Web.FallbackController do
 
   See `Phoenix.Controller.action_fallback/1` for more details.
   """
+
   use <%= base %>Web, :controller
 
   def call(conn, {:error, %Ecto.Changeset{} = changeset}) do

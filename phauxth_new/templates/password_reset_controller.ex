@@ -18,7 +18,7 @@ defmodule <%= base %>Web.PasswordResetController do
     conn
     |> put_status(:created)
     |> put_view(<%= base %>Web.PasswordResetView)
-    |> render("info.json", %{info: message})
+    |> render("info.json", %{info: "Check your inbox for instructions on how to reset your password"})
   end<% else %>
 
     conn
@@ -54,7 +54,10 @@ defmodule <%= base %>Web.PasswordResetController do
 
   defp update_password({:ok, user}, conn, _params) do
     Email.reset_success(user.email)<%= if api do %>
-    render(conn, <%= base %>Web.PasswordResetView, "info.json", %{info: message})<% else %>
+
+    conn
+    |> put_view(<%= base %>Web.PasswordResetView)
+    |> render("info.json", %{info: "Your password has been reset"})<% else %>
 
     conn
     |> delete_session(:phauxth_session_id)

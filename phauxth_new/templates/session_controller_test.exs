@@ -55,7 +55,8 @@ defmodule <%= base %>Web.SessionControllerTest do
     test "login fails for invalid password", %{conn: conn} do
       conn = post(conn, Routes.session_path(conn, :create), session: @invalid_attrs)<%= if api do %>
       assert json_response(conn, 401)["errors"]["detail"] =~ "need to login"
-    end<% else %>
+    end
+  end<% else %>
       assert redirected_to(conn) == Routes.session_path(conn, :new)
     end
 
