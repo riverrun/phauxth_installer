@@ -40,7 +40,7 @@ defmodule Mix.Tasks.Phauxth.NewTest do
       assert_file("lib/phauxth_new_web/controllers/session_controller.ex", fn file ->
         assert file =~ ~s(alias Phauxth.Login)
         assert file =~ "Sessions.create_session(%{user_id: user.id})"
-        refute file =~ ~s(Phauxth.Remember.delete_rem_cookie)
+        refute file =~ ~s(Remember.delete_rem_cookie)
       end)
 
       assert_file("lib/phauxth_new_web/views/user_view.ex", fn file ->
@@ -92,7 +92,7 @@ defmodule Mix.Tasks.Phauxth.NewTest do
       end)
 
       assert_file("lib/phauxth_new/accounts/user.ex", fn file ->
-        assert file =~ "field :confirmed_at, :utc_datetime"
+        assert file =~ "field(:confirmed_at, :utc_datetime)"
         assert file =~ "cast(attrs, [:email, :password])"
       end)
 
@@ -114,7 +114,7 @@ defmodule Mix.Tasks.Phauxth.NewTest do
       end)
 
       assert_file("lib/phauxth_new_web/controllers/session_controller.ex", fn file ->
-        assert file =~ ~s(Phauxth.Remember.delete_rem_cookie)
+        assert file =~ ~s(Remember.delete_rem_cookie)
       end)
     end)
   end
