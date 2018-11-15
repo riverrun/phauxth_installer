@@ -3,8 +3,9 @@ defmodule <%= base %>Web.UserController do
 
   import <%= base %>Web.Authorize
 
-  alias Phauxth.Log
-  alias <%= base %>.{Accounts, Accounts.User}<%= if confirm do %>
+  alias Phauxth.Log<%= if api do %>
+  alias <%= base %>.Accounts<% else %>
+  alias <%= base %>.{Accounts, Accounts.User}<% end %><%= if confirm do %>
   alias <%= base %>Web.{Auth.Token, Email}<% end %><%= if api do %>
 
   action_fallback <%= base %>Web.FallbackController<% end %>

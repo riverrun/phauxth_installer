@@ -1,5 +1,5 @@
 #!/bin/bash
-#set -x
+set -x
 
 LOG="../../integration_test/phx_integration_test.log"
 
@@ -37,7 +37,7 @@ cd $(dirname "$0")/../tmp
 
 setup_phx
 integration_test
-setup_phx --no-html --no-brunch
+setup_phx --no-html --no-webpack
 integration_test --api
 
 echo "------------------------------------------------------------"

@@ -58,7 +58,7 @@ defmodule <%= base %>Web.SessionController do
     end
   end
 
-  defp add_session(conn, user, params) do
+  defp add_session(conn, user, <%= if not remember do %>_<% end %>params) do
     {:ok, %{id: session_id}} = Sessions.create_session(%{user_id: user.id})
 
     conn

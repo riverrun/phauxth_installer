@@ -135,7 +135,7 @@ defmodule Mix.Tasks.Phauxth.NewTest do
       end)
 
       assert_file("lib/phauxth_new_web/router.ex", fn file ->
-        assert file =~ ~s(plug Phauxth.Authenticate, method: :token)
+        assert file =~ ~s(plug Phauxth.AuthenticateToken)
         assert file =~ ~s(post "/sessions", SessionController, :create)
       end)
 
@@ -166,7 +166,7 @@ defmodule Mix.Tasks.Phauxth.NewTest do
       end)
 
       assert_file("lib/phauxth_new_web/router.ex", fn file ->
-        assert file =~ ~s(plug Phauxth.Authenticate, method: :token)
+        assert file =~ ~s(plug Phauxth.AuthenticateToken)
         assert file =~ ~s(post "/password_resets", PasswordResetController, :create)
       end)
 
