@@ -10,9 +10,7 @@ defmodule <%= base %>.Accounts do
   @doc """
   Returns the list of users.
   """
-  def list_users do
-    Repo.all(User)
-  end
+  def list_users, do: Repo.all(User)
 
   @doc """
   Gets a single user.
@@ -32,6 +30,15 @@ defmodule <%= base %>.Accounts do
   def get_by(%{"email" => email}) do
     Repo.get_by(User, email: email)
   end
+
+  def get_by(%{"user_id" => user_id}), do: Repo.get(User, user_id)
+
+  @doc """
+  Creates a session for the user.
+
+  This is used by Phauxth.Remember.
+  """
+  def create_session(attrs), do: Sessions.create_session(attrs)
 
   @doc """
   Creates a user.
