@@ -31,7 +31,7 @@ defmodule <%= base %>Web.Email do
   """
 
   import Bamboo.Email
-  alias <%= base %>.Mailer
+  alias <%= base %>Web.Mailer
 
   @doc """
   An email with a confirmation link in it.

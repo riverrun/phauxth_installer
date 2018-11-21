@@ -116,7 +116,7 @@ defmodule Phauxth.New.Generator do
     test_config_input(false, base_name, base) <>
       """
       \n# Mailer test configuration
-      config :#{base_name}, #{base}.Mailer,
+      config :#{base_name}, #{base}Web.Mailer,
         adapter: Bamboo.TestAdapter
       """
   end

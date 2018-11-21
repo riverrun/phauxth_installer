@@ -188,6 +188,7 @@ defmodule Mix.Tasks.Phauxth.New do
 
       target =
         case target do
+          "priv" <> _ -> target
           "priv/repo/migrations/timestamp_create_users.exs" -> String.replace(target, "timestamp", timestamp(0))
           "priv/repo/migrations/timestamp_create_sessions.exs" -> String.replace(target, "timestamp", timestamp(2))
           "test/namespace" <> _ -> String.replace(target, "test/namespace", "test/#{name}")
