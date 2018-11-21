@@ -107,10 +107,14 @@ defmodule Mix.Tasks.Phauxth.New do
     {:text, "password_reset_edit.html.eex", "_web/templates/password_reset/edit.html.eex"}
   ]
 
+  @phx_remember [{:eex, "auth_utils.ex", "_web/auth/utils.ex"}]
+
   root = Path.expand("../../../templates", __DIR__)
 
   all_files =
-    @phx_base ++ @phx_api ++ @phx_html ++ @phx_confirm ++ @phx_api_confirm ++ @phx_html_confirm
+    @phx_base ++
+      @phx_api ++
+      @phx_html ++ @phx_confirm ++ @phx_api_confirm ++ @phx_html_confirm ++ @phx_remember
 
   for {_, source, _} <- all_files do
     @external_resource Path.join(root, source)
@@ -123,13 +127,12 @@ defmodule Mix.Tasks.Phauxth.New do
     switches = [api: :boolean, confirm: :boolean, remember: :boolean, backups: :boolean]
     {opts, _, _} = OptionParser.parse(args, switches: switches)
 
-    {api, confirm, remember, backups} =
-      {
-        opts[:api] == true,
-        opts[:confirm] == true,
-        opts[:remember] == true,
-        opts[:backups] != false
-      }
+    {api, confirm, remember, backups} = {
+      opts[:api] == true,
+      opts[:confirm] == true,
+      opts[:remember] == true,
+      opts[:backups] != false
+    }
 
     files =
       @phx_base ++
@@ -138,7 +141,7 @@ defmodule Mix.Tasks.Phauxth.New do
           {true, _} -> @phx_api
           {_, true} -> @phx_html ++ @phx_confirm ++ @phx_html_confirm
           _ -> @phx_html
-        end
+        end ++ if remember, do: @phx_remember, else: []
 
     base_name = base_name()
     base = base_name |> Macro.camelize()
@@ -188,12 +191,23 @@ defmodule Mix.Tasks.Phauxth.New do
 
       target =
         case target do
-          "priv/repo/seeds" -> target
-          "priv/repo/migrations/timestamp_create_users.exs" -> String.replace(target, "timestamp", timestamp(0))
-          "priv/repo/migrations/timestamp_create_sessions.exs" -> String.replace(target, "timestamp", timestamp(2))
-          "test/namespace" <> _ -> String.replace(target, "test/namespace", "test/#{name}")
-          "test" <> _ -> target
-          _ -> "lib/#{name}" <> target
+          "priv/repo/seeds" ->
+            target
+
+          "priv/repo/migrations/timestamp_create_users.exs" ->
+            String.replace(target, "timestamp", timestamp(0))
+
+          "priv/repo/migrations/timestamp_create_sessions.exs" ->
+            String.replace(target, "timestamp", timestamp(2))
+
+          "test/namespace" <> _ ->
+            String.replace(target, "test/namespace", "test/#{name}")
+
+          "test" <> _ ->
+            target
+
+          _ ->
+            "lib/#{name}" <> target
         end
 
       contents =
