@@ -77,7 +77,7 @@ defmodule Phauxth.New.Generator do
   end
 
   defp mix_input(false) do
-    "{:phauxth, \"~> 2.0.0-rc\"},\n" <> "      {:argon2_elixir, \"~> 1.3\"},\n"
+    "{:phauxth, \"~> 2.0.0\"},\n" <> "      {:argon2_elixir, \"~> 1.3\"},\n"
   end
 
   defp mix_input(true) do

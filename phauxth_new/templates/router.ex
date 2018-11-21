@@ -23,7 +23,7 @@ defmodule <%= base %>Web.Router do
     plug :protect_from_forgery
     plug :put_secure_browser_headers
     plug Phauxth.Authenticate<%= if remember do %>
-    plug Phauxth.Remember<% end %>
+    plug Phauxth.Remember, create_session_func: &<%= base %>Web.Auth.Utils.create_session/1<% end %>
   end
 
   scope "/", <%= base %>Web do
