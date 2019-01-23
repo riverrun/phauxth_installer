@@ -26,7 +26,7 @@ defmodule <%= base %>Web.SessionController do
         # database, remove this line, the <%= base %>.Sessions alias and the
         # <%= base %>.Sessions and <%= base %>.Sessions.Session modules
         {:ok, %{id: session_id}} = Sessions.create_session(%{user_id: user.id})
-        token = Token.sign(%{session_id: session_id})
+        token = Token.sign(%{"session_id" => session_id})
         render(conn, "info.json", %{info: token})
       {:error, _message} ->
         error(conn, :unauthorized, 401)<% else %>
