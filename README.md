@@ -4,9 +4,9 @@ This repository contains the `phauxth.new` installer, which can be used
 to set up authentication, using the [Phauxth authentication
 library](https://github.com/riverrun/phauxth), for a Phoenix app.
 
-## Version 2.0.0-rc & 1.2
+## Version 2.1.0 & 1.2
 
-The master branch uses version 2.0.0-rc of Phauxth and is compatible with
+The master branch uses version 2.1.0 of Phauxth and is compatible with
 Phoenix 1.4.0 and phoenix_ecto 4.0 (ecto 3).
 
 The v1.2 branch uses version 1.2 of Phauxth with version 1.3 of Phoenix.

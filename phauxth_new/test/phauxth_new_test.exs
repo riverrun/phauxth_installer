@@ -20,7 +20,7 @@ defmodule Mix.Tasks.Phauxth.NewTest do
       refute_file("lib/phauxth_new_web/mailer.ex")
 
       assert_file("mix.exs", fn file ->
-        assert file =~ ~s(:argon2_elixir, "~> 1.3")
+        assert file =~ ~s(:argon2_elixir, "~> 2.0")
       end)
 
       assert_file("config/config.exs", fn file ->
@@ -62,7 +62,7 @@ defmodule Mix.Tasks.Phauxth.NewTest do
       assert_file("test/phauxth_new_web/controllers/confirm_controller_test.exs")
 
       assert_file("mix.exs", fn file ->
-        assert file =~ ~s(:argon2_elixir, "~> 1.3")
+        assert file =~ ~s(:argon2_elixir, "~> 2.0")
         assert file =~ ~s(:bamboo, "~> 1.1")
       end)
 

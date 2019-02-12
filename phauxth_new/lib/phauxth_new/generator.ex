@@ -77,7 +77,7 @@ defmodule Phauxth.New.Generator do
   end
 
   defp mix_input(false) do
-    "{:phauxth, \"~> 2.0.0\"},\n" <> "      {:argon2_elixir, \"~> 1.3\"},\n"
+    "{:phauxth, \"~> 2.1.0\"},\n" <> "      {:argon2_elixir, \"~> 2.0\"},\n"
   end
 
   defp mix_input(true) do
@@ -89,7 +89,7 @@ defmodule Phauxth.New.Generator do
     # Phauxth authentication configuration
     config :phauxth,
       user_context: #{base}.Accounts,
-      crypto_module: Comeonin.Argon2,
+      crypto_module: Argon2,
       token_module: #{base}Web.Auth.Token\n
     """
   end
@@ -105,8 +105,8 @@ defmodule Phauxth.New.Generator do
 
   defp test_config_input(false, _, _) do
     """
-    \n\n# Comeonin password hashing test config
-    config :argon2_elixir, t_cost: 2, m_cost: 8
+    \n\n# Password hashing test config
+    config :argon2_elixir, t_cost: 1, m_cost: 8
     #config :bcrypt_elixir, log_rounds: 4
     #config :pbkdf2_elixir, rounds: 1
     """

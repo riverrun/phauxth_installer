@@ -6,7 +6,6 @@ defmodule <%= base %>Web.Auth.Login do
 
   use Phauxth.Login.Base
 
-  alias Comeonin.Argon2
   alias <%= base %>.Accounts
 
   @impl true
