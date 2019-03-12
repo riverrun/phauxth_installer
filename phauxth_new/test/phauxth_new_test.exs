@@ -16,7 +16,7 @@ defmodule Mix.Tasks.Phauxth.NewTest do
       assert_file("lib/phauxth_new_web/controllers/authorize.ex")
       assert_file("lib/phauxth_new_web/templates/session/new.html.eex")
 
-      refute_file("lib/phauxth_new/accounts/message.ex")
+      refute_file("lib/phauxth_new_web/email.ex")
       refute_file("lib/phauxth_new_web/mailer.ex")
 
       assert_file("mix.exs", fn file ->
@@ -60,6 +60,7 @@ defmodule Mix.Tasks.Phauxth.NewTest do
 
       assert_file("lib/phauxth_new_web/controllers/confirm_controller.ex")
       assert_file("test/phauxth_new_web/controllers/confirm_controller_test.exs")
+      assert_file("lib/phauxth_new_web/email.ex")
 
       assert_file("mix.exs", fn file ->
         assert file =~ ~s(:argon2_elixir, "~> 2.0")
@@ -96,7 +97,7 @@ defmodule Mix.Tasks.Phauxth.NewTest do
         assert file =~ "cast(attrs, [:email, :password])"
       end)
 
-      assert_file("lib/phauxth_new/accounts/accounts.ex", fn file ->
+      assert_file("lib/phauxth_new/accounts.ex", fn file ->
         assert file =~ "|> User.password_reset_changeset"
       end)
 
@@ -126,7 +127,7 @@ defmodule Mix.Tasks.Phauxth.NewTest do
       assert_file("lib/phauxth_new_web/views/auth_view.ex")
       assert_file("lib/phauxth_new_web/controllers/authorize.ex")
 
-      refute_file("lib/phauxth_new/accounts/message.ex")
+      refute_file("lib/phauxth_new_web/email.ex")
       refute_file("lib/phauxth_new_web/mailer.ex")
 
       assert_file("config/config.exs", fn file ->

@@ -1,5 +1,5 @@
 defmodule <%= base %>Web.UserView do
-  use <%= base %>Web, :view
+  use <%= base %>Web, :view<%= if api do %>
   alias <%= base %>Web.UserView
 
   def render("index.json", %{users: users}) do
@@ -13,5 +13,5 @@ defmodule <%= base %>Web.UserView do
   def render("user.json", %{user: user}) do
     %{id: user.id,
       email: user.email}
-  end
+  end<% end %>
 end
