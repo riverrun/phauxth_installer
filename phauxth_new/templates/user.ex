@@ -32,12 +32,16 @@ defmodule <%= base %>.Accounts.User do
     |> put_pass_hash
   end<%= if confirm do %>
 
-  def confirm_changeset(user) do
+  def confirm_changeset(%__MODULE__{} = user) do
     change(user, %{confirmed_at: DateTime.utc_now() |> DateTime.truncate(:second)})
   end
 
-  def password_reset_changeset(user, reset_sent_at) do
+  def password_reset_changeset(%__MODULE__{} = user, reset_sent_at) do
     change(user, %{reset_sent_at: reset_sent_at})
+  end
+
+  def password_updated_changeset(changeset) do
+    change(changeset, %{reset_sent_at: nil})
   end<% end %>
 
   defp unique_email(changeset) do

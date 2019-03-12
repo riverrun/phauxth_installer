@@ -91,7 +91,7 @@ defmodule <%= base %>.Accounts do
 
     user
     |> User.create_changeset(attrs)
-    |> User.password_reset_changeset(nil)
+    |> User.password_updated_changeset()
     |> Repo.update()
   end<% end %>
 end
