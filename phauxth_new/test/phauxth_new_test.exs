@@ -93,7 +93,7 @@ defmodule Mix.Tasks.Phauxth.NewTest do
       end)
 
       assert_file("lib/phauxth_new/accounts/user.ex", fn file ->
-        assert file =~ "field(:confirmed_at, :utc_datetime)"
+        assert file =~ "field :confirmed_at, :utc_datetime"
         assert file =~ "cast(attrs, [:email, :password])"
       end)
 

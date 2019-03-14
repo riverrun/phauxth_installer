@@ -17,12 +17,12 @@ defmodule <%= base %>.Accounts.User do
   }
 
   schema "users" do
-    field(:email, :string)
-    field(:password, :string, virtual: true)
-    field(:password_hash, :string)<%= if confirm do %>
-    field(:confirmed_at, :utc_datetime)
-    field(:reset_sent_at, :utc_datetime)<% end %>
-    has_many(:sessions, Session, on_delete: :delete_all)
+    field :email, :string
+    field :password, :string, virtual: true
+    field :password_hash, :string<%= if confirm do %>
+    field :confirmed_at, :utc_datetime
+    field :reset_sent_at, :utc_datetime<% end %>
+    has_many :sessions, Session, on_delete: :delete_all
 
     timestamps()
   end
