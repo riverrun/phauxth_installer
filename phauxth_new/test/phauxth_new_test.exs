@@ -87,7 +87,7 @@ defmodule Mix.Tasks.Phauxth.NewTest do
         assert file =~ ~s(alias PhauxthNewWeb.Auth.Login)
       end)
 
-      assert_file("test/support/auth_case.ex", fn file ->
+      assert_file("test/support/auth_test_helpers.ex", fn file ->
         assert file =~ "import Ecto.Changeset"
         assert file =~ "change(%{confirmed_at: now()})"
       end)

@@ -1,4 +1,4 @@
-defmodule <%= base %>Web.AuthCase do
+defmodule <%= base %>Web.AuthTestHelpers do
   use Phoenix.ConnTest<%= if confirm do %>
 
   import Ecto.Changeset

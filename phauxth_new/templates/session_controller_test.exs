@@ -1,7 +1,7 @@
 defmodule <%= base %>Web.SessionControllerTest do
   use <%= base %>Web.ConnCase
 
-  import <%= base %>Web.AuthCase
+  import <%= base %>Web.AuthTestHelpers
 
   @create_attrs %{email: "robin@example.com", password: "reallyHard2gue$$"}
   @invalid_attrs %{email: "robin@example.com", password: "cannotGue$$it"}<%= if confirm do %>

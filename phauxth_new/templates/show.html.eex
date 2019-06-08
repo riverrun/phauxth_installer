@@ -1,12 +1,10 @@
-<h2>Show User</h2>
+<h2>Show user</h2>
 
 <ul>
-
   <li>
     <strong>Email:</strong>
     <%= @user.email %>
   </li>
-
 </ul>
 
 <span><%= link "Edit", to: Routes.user_path(@conn, :edit, @user) %></span><br>

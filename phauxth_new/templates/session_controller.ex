@@ -4,8 +4,9 @@ defmodule <%= base %>Web.SessionController do
   import <%= base %>Web.Authorize
 <%= if not confirm do %>
   alias Phauxth.Login<% end %><%= if remember do %>
-  alias Phauxth.Remember<% end %>
-  alias <%= base %>.Sessions<%= if confirm do %>
+  alias Phauxth.Remember<% end %><%= if api do %>
+  alias <%= base %>.Sessions<% else %>
+  alias <%= base %>.{Sessions, Sessions.Session}<% end %><%= if confirm do %>
   alias <%= base %>Web.Auth.Login<% end %><%= if api do %>
   alias <%= base %>Web.Auth.Token
 
@@ -43,8 +44,9 @@ defmodule <%= base %>Web.SessionController do
   end<%= if not api do %>
 
   def delete(%Plug.Conn{assigns: %{current_user: %{id: user_id}}} = conn, %{"id" => session_id}) do
-    case session_id |> Sessions.get_session() |> Sessions.delete_session() do
-      {:ok, %{user_id: ^user_id}} ->
+    case Sessions.get_session(session_id) do
+      %Session{user_id: ^user_id} = session ->
+        Sessions.delete_session(session)
         conn
         |> delete_session(:phauxth_session_id)<%= if remember do %>
         |> Remember.delete_rem_cookie()<% end %>

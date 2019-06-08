@@ -2,7 +2,8 @@ defmodule <%= base %>Web.EmailTest do
   use ExUnit.Case
   use Bamboo.Test
 
-  import <%= base %>Web.AuthCase
+  import <%= base %>Web.AuthTestHelpers
+
   alias <%= base %>Web.Email
 
   setup do

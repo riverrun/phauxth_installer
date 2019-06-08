@@ -31,6 +31,7 @@ defmodule <%= base %>Web.Email do
   """
 
   import Bamboo.Email
+
   alias <%= base %>Web.Mailer
 
   @doc """
