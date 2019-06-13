@@ -191,7 +191,7 @@ defmodule Mix.Tasks.Phauxth.New do
 
       target =
         case target do
-          "priv/repo/seeds" ->
+          "priv/repo/seeds.exs" ->
             target
 
           "priv/repo/migrations/timestamp_create_users.exs" ->
