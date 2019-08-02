@@ -77,11 +77,11 @@ defmodule Phauxth.New.Generator do
   end
 
   defp mix_input(false) do
-    "{:phauxth, \"~> 2.1.0\"},\n" <> "      {:argon2_elixir, \"~> 2.0\"},\n"
+    "{:phauxth, \"~> 2.3\"},\n" <> "      {:argon2_elixir, \"~> 2.0\"},\n"
   end
 
   defp mix_input(true) do
-    mix_input(false) <> "      {:bamboo, \"~> 1.1\"},\n"
+    mix_input(false) <> "      {:bamboo, \"~> 1.2\"},\n"
   end
 
   defp config_input(false, _, base) do
