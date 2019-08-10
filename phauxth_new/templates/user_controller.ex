@@ -32,7 +32,7 @@ defmodule <%= base %>Web.UserController do
   def create(conn, %{"user" => user_params}) do<% end %><%= if api do %>
     with {:ok, user} <- Accounts.create_user(user_params) do
       Log.info(%Log{user: user.id, message: "user created"})<%= if confirm do %>
-      Email.confirm_request(email, key)<% end %>
+      Email.confirm_request(email, Routes.confirm_url(conn, :index, key: key))<% end %>
       conn
       |> put_status(:created)
       |> put_resp_header("location", Routes.user_path(conn, :show, user))
@@ -41,7 +41,7 @@ defmodule <%= base %>Web.UserController do
       {:ok, user} ->
         Log.info(%Log{user: user.id, message: "user created"})
 <%= if confirm do %>
-        Email.confirm_request(email, key)
+        Email.confirm_request(email, Routes.confirm_url(conn, :index, key: key))
 <% end %>
 
         conn
@@ -54,7 +54,7 @@ defmodule <%= base %>Web.UserController do
   end
 
   def show(%Plug.Conn{assigns: %{current_user: user}} = conn, %{"id" => id}) do
-    user = if id == to_string(user.id), do: user, else: Accounts.get_user(id)<%= if api do %>
+    user = if id == to_string(user.id), do: user, else: Accounts.get_user!(id)<%= if api do %>
     render(conn, "show.json", user: user)<% else %>
     render(conn, "show.html", user: user)<% end %>
   end<%= if not api do %>

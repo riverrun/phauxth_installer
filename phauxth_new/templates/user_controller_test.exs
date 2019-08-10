@@ -54,6 +54,12 @@ defmodule <%= base %>Web.UserControllerTest do
       assert json_response(conn, 200)["data"] == %{"id" => user.id, "email" => "reg@example.com"}<% else %>
       assert html_response(conn, 200) =~ "Show user"<% end %>
     end
+
+    test "returns 404 when user not found", %{conn: conn} do
+      assert_error_sent 404, fn ->
+        get(conn, Routes.user_path(conn, :show, -1))
+      end
+    end
   end
 
   describe "create user" do
@@ -78,7 +84,7 @@ defmodule <%= base %>Web.UserControllerTest do
       conn = put(conn, Routes.user_path(conn, :update, user), user: @update_attrs)<%= if api do %>
       assert json_response(conn, 200)["data"]["id"] == user.id<% else %>
       assert redirected_to(conn) == Routes.user_path(conn, :show, user)<% end %>
-      updated_user = Accounts.get_user(user.id)
+      updated_user = Accounts.get_user!(user.id)
       assert updated_user.email == "william@example.com"<%= if not api do %>
       conn = get conn,(Routes.user_path(conn, :show, user))
       assert html_response(conn, 200) =~ "william@example.com"<% end %>
@@ -101,7 +107,7 @@ defmodule <%= base %>Web.UserControllerTest do
       conn = delete(conn, Routes.user_path(conn, :delete, user))<%= if api do %>
       assert response(conn, 204)<% else %>
       assert redirected_to(conn) == Routes.session_path(conn, :new)<% end %>
-      refute Accounts.get_user(user.id)
+      assert_raise Ecto.NoResultsError, fn -> Accounts.get_user!(user.id) end
     end<%= if api do %>
 
     test "cannot delete other user", %{conn: conn} do<% else %>
@@ -111,7 +117,7 @@ defmodule <%= base %>Web.UserControllerTest do
       conn = delete(conn, Routes.user_path(conn, :delete, other))<%= if api do %>
       assert json_response(conn, 403)["errors"]["detail"] =~ "not authorized"<% else %>
       assert redirected_to(conn) == Routes.user_path(conn, :show, user)<% end %>
-      assert Accounts.get_user(other.id)
+      assert Accounts.get_user!(other.id)
     end
   end
 

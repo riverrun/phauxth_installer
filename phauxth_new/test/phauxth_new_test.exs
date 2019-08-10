@@ -64,7 +64,7 @@ defmodule Mix.Tasks.Phauxth.NewTest do
 
       assert_file("mix.exs", fn file ->
         assert file =~ ~s(:argon2_elixir, "~> 2.0")
-        assert file =~ ~s(:bamboo, "~> 1.2")
+        assert file =~ ~s(:bamboo, "~> 1.3")
       end)
 
       assert_file("config/config.exs", fn file ->

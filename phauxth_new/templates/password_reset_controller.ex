@@ -11,15 +11,17 @@ defmodule <%= base %>Web.PasswordResetController do
 
   def create(conn, %{"password_reset" => %{"email" => email}}) do
     if Accounts.create_password_reset(%{"email" => email}) do
-      key = Token.sign(%{"email" => email})
-      Email.reset_request(email, key)
-    end<%= if api do %>
+      key = Token.sign(%{"email" => email})<%= if api do %>
+      Email.reset_request(email, Routes.password_reset_url(conn, :update, password_reset: %{key: key}))
+    end
 
     conn
     |> put_status(:created)
     |> put_view(<%= base %>Web.PasswordResetView)
     |> render("info.json", %{info: "Check your inbox for instructions on how to reset your password"})
   end<% else %>
+      Email.reset_request(email, Routes.password_reset_url(conn, :edit, key: key))
+    end
 
     conn
     |> put_flash(:info, "Check your inbox for instructions on how to reset your password")

@@ -19,9 +19,9 @@ defmodule <%= base %>.AccountsTest do
       assert Accounts.list_users() == [user]
     end
 
-    test "get returns the user with given id" do
+    test "get_user! returns the user with given id" do
       user = fixture(:user)
-      assert Accounts.get_user(user.id) == user
+      assert Accounts.get_user!(user.id) == user
     end
 
     test "change_user/1 returns a user changeset" do
@@ -50,7 +50,7 @@ defmodule <%= base %>.AccountsTest do
     test "update_user/2 with invalid data returns error changeset" do
       user = fixture(:user)
       assert {:error, %Ecto.Changeset{}} = Accounts.update_user(user, @invalid_attrs)
-      assert user == Accounts.get_user(user.id)
+      assert user == Accounts.get_user!(user.id)
     end<%= if confirm do %>
 
     test "update password changes the stored hash" do
@@ -71,7 +71,7 @@ defmodule <%= base %>.AccountsTest do
     test "delete_user/1 deletes the user" do
       user = fixture(:user)
       assert {:ok, %User{}} = Accounts.delete_user(user)
-      refute Accounts.get_user(user.id)
+      assert_raise Ecto.NoResultsError, fn -> Accounts.get_user!(user.id) end
     end
   end
 end

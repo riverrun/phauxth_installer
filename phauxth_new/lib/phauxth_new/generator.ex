@@ -81,7 +81,7 @@ defmodule Phauxth.New.Generator do
   end
 
   defp mix_input(true) do
-    mix_input(false) <> "      {:bamboo, \"~> 1.2\"},\n"
+    mix_input(false) <> "      {:bamboo, \"~> 1.3\"},\n"
   end
 
   defp config_input(false, _, base) do

@@ -11,7 +11,7 @@ defmodule <%= base %>Web.Router do
 
     post "/sessions", SessionController, :create
     resources "/users", UserController, except: [:new, :edit]<%= if confirm do %>
-    get "/confirm", ConfirmController, :index
+    get "/confirms", ConfirmController, :index
     post "/password_resets", PasswordResetController, :create
     put "/password_resets/update", PasswordResetController, :update<% end %>
   end<% else %>
@@ -32,10 +32,13 @@ defmodule <%= base %>Web.Router do
     get "/", PageController, :index
     resources "/users", UserController
     resources "/sessions", SessionController, only: [:new, :create, :delete]<%= if confirm do %>
-    get "/confirm", ConfirmController, :index
+    get "/confirms", ConfirmController, :index
     resources "/password_resets", PasswordResetController, only: [:new, :create]
     get "/password_resets/edit", PasswordResetController, :edit
     put "/password_resets/update", PasswordResetController, :update<% end %>
-  end<% end %>
+  end<% end %><%= if confirm do %>
 
+  if Mix.env() == :dev do
+    forward "/sent_emails", Bamboo.SentEmailViewerPlug
+  end<% end %>
 end
